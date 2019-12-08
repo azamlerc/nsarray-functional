@@ -1,0 +1,288 @@
+//
+//  NSArray+Functional.m
+//
+//  Created by Andrew Zamler-Carhart on 12/7/19.
+//
+
+#import "NSArray+Functional.h"
+#import <Foundation/Foundation.h>
+
+@implementation NSArray (Functional)
+
++ (NSArray *) generate:(id(^)(void))block
+                 count:(int)count {
+    NSMutableArray *result = [NSMutableArray array];
+    for (NSUInteger i = 0; i < count; i++) {
+        [result addObject:block()];
+    }
+    return result;
+}
+
++ (NSArray *) numbersInRange:(NSRange)range {
+    NSMutableArray *result = [NSMutableArray array];
+    for (NSUInteger i = range.location; i < range.length + range.location; i++) {
+        [result addObject:[NSNumber numberWithDouble: i]];
+    }
+    return result;
+}
+
+- (void) each:(void(^)(id object))block {
+    for (id object in self) {
+        block(object);
+    }
+}
+
+- (BOOL) every:(BOOL(^)(id object))block {
+    for (id object in self) {
+        if (!block(object)) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
+- (BOOL) any:(BOOL(^)(id object))block {
+    for (id object in self) {
+        if (block(object)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (BOOL) containsObjects:(NSArray *)objects {
+    NSSet *set = [NSSet setWithArray:self];
+    for (id object in objects) {
+        if (![set containsObject: object]) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
+- (id) find:(BOOL(^)(id object))block {
+    for (id object in self) {
+        if (block(object)) {
+            return object;
+        }
+    }
+    return nil;
+}
+
+- (NSArray *) map:(id(^)(id object))block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        [result addObject:block(object)];
+    }
+    return result;
+}
+
+- (NSArray *) indexedMap:(id(^)(NSUInteger index, id object))block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (NSUInteger index = 0; index < [self count]; index++) {
+        id object = [self objectAtIndex:index];
+        [result addObject:block(index, object)];
+    }
+    return result;
+}
+
+- (NSArray *) multiMap:(NSArray *)blocks {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        NSMutableArray *line = [NSMutableArray array];
+        for (id(^block)(id) in blocks) {
+            [line addObject:block(object)];
+        }
+        [result addObject: line];
+    }
+    return result;
+}
+
+- (NSArray *) matrixMap:(id(^)(id object1, id object2))block
+                objects:(NSArray *)objects {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object1 in self) {
+        NSMutableArray *line = [NSMutableArray array];
+        for (id object2 in objects) {
+            [line addObject:block(object1, object2)];
+        }
+        [result addObject: line];
+    }
+    return result;
+}
+
+- (NSArray *) squareMap:(id(^)(id object1, id object2))block {
+    return [self matrixMap:block objects:self];
+}
+
+- (NSArray *) nestedMap:(id(^)(id object))block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        if ([object isKindOfClass:[NSArray class]]) {
+            [result addObject:[object nestedMap:block]];
+        } else {
+            [result addObject:block(object)];
+        }
+    }
+    return result;
+}
+
+- (NSArray *) replace:(NSDictionary *)dict {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        id value = [dict objectForKey:object];
+        [result addObject: value != nil ? value : object];
+    }
+    return result;
+}
+
+- (NSArray *) filter:(BOOL(^)(id object))block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        if (block(object)) {
+            [result addObject:object];
+        }
+    }
+    return result;
+}
+
+- (NSArray *) remove:(BOOL(^)(id object))block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        if (!block(object)) {
+            [result addObject:object];
+        }
+    }
+    return result;
+}
+
+- (NSArray *) filterObjectsIn:(NSArray *)objects {
+    NSSet *set = [NSSet setWithArray: objects];
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        if ([set containsObject:object]) {
+            [result addObject:object];
+        }
+    }
+    return result;
+}
+
+- (NSArray *) removeObjectsIn:(NSArray *)objects {
+    NSSet *set = [NSSet setWithArray: objects];
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        if (![set containsObject:object]) {
+            [result addObject:object];
+        }
+    }
+    return result;
+}
+
+- (id) reduce:(id(^)(id acc, id object))block {
+    return [self reduce:block initial:nil];
+}
+
+- (id) reduce:(id(^)(id acc, id object))block
+      initial:(id)initial {
+    for (id object in self) {
+        initial = initial == nil ? object : block(initial, object);
+    }
+    return initial;
+}
+
+- (NSArray *) sort {
+    return [self sortedArrayUsingSelector:@selector(compare:)];
+}
+
+- (NSArray *) sort:(NSComparator)block {
+    return [self sortedArrayUsingComparator:block];
+}
+
+- (NSArray *) sortBy:(NSUInteger(^)(id object))block {
+    return [self sort:^(id a, id b) {
+      return [[NSNumber numberWithLong:block(a)] compare:
+              [NSNumber numberWithLong:block(b)]];
+    }];
+}
+
+- (NSArray *) reverse {
+    return [[self reverseObjectEnumerator] allObjects];
+}
+
+- (NSArray *) unique {
+    return [[NSSet setWithArray:self] allObjects];
+}
+
+- (NSArray *) limit:(int)limit {
+    return [self subarrayWithRange:NSMakeRange(0, limit)];
+}
+
+- (NSString *) join {
+    return [self join: @", "];
+}
+
+- (NSString *) join:(NSString *)separator {
+    return [self componentsJoinedByString:separator];
+}
+
+- (id) randomObject {
+    if ([self count] == 0) return nil;
+    NSUInteger randomIndex = arc4random_uniform((unsigned int)[self count]);
+    return [self objectAtIndex: randomIndex];
+}
+
+- (NSArray *) shuffle {
+    NSMutableArray *copy = [self mutableCopy];
+    [copy sortUsingSelector: @selector(randomCompare:)];
+    return copy;
+}
+
+- (NSArray *) zip:(NSArray *)objects {
+    NSMutableArray *result = [NSMutableArray array];
+    NSUInteger selfCount = [self count];
+    NSUInteger objectsCount = [objects count];
+    
+    for (NSUInteger i = 0; i < selfCount || i < objectsCount; i++) {
+        if (i < selfCount) {
+            [result addObject: [self objectAtIndex:i]];
+        }
+        if (i < objectsCount) {
+            [result addObject: [objects objectAtIndex:i]];
+        }
+    }
+    return result;
+}
+
+- (NSArray *) flatten {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        if ([object isKindOfClass:[NSArray class]]) {
+            [result addObjectsFromArray:[object flatten]];
+        } else {
+            [result addObject:object];
+        }
+    }
+    return result;
+}
+
+- (NSArray *) concat:(NSArray *)objects {
+    return [self arrayByAddingObjectsFromArray:objects];
+}
+
+@end
+
+@implementation NSObject (RandomObject)
+
+- (NSComparisonResult) randomCompare: (NSObject *) object {
+    return (arc4random_uniform(100) % 2 == 0) ? NSOrderedAscending : NSOrderedDescending;
+}
+
+@end
+
+@implementation NSString (StringAdditions)
+
+- (BOOL) contains: (NSString *) string {
+    return [self rangeOfString: string].location != NSNotFound;
+}
+
+@end
