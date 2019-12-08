@@ -10,6 +10,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Range](#range): array with range of numbers
 - [Apply](#apply): call a block on an object
 - [Apply All](#apply-all): call several blocks on an object
+- [Call All](#call-all): call several blocks
 - [Copies](#copies): array of copies of an object
 - [Copies Of](#copies-of): array of copies of an object
 - [Each](#each): call a block on each object
