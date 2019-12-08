@@ -216,6 +216,7 @@ Returns an array by looking up each object in the dictionary and replacing it wi
 ```
 NSDictionary *frenchColors = @{
     @"red": @"rouge",
+    // orange is the same
     @"yellow": @"jaune",
     @"green": @"vert",
     @"blue": @"bleu",
