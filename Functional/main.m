@@ -64,7 +64,7 @@ NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
     return [[[[[[[foursA matrixMap:[Tuple make] objects:foursB]
                  nestedMap:[Tuple bothWays]]
                 flatten]
-               multiMap: @[add, subtract, multiply, divide]]
+               mapAll: @[add, subtract, multiply, divide]]
               flatten]
              unique]
             sort];
@@ -175,10 +175,10 @@ int main(int argc, const char * argv[]) {
         NSArray *nested = @[@[@1, @2], @[@3, @[@4, @[@5, @[@6]]]]];
         NSLog(@"Squared nested array: %@", [[nested nestedMap:square] nestedJoin]);
 
-        NSLog(@"\nMulti Map");
+        NSLog(@"\nMap All");
 
         NSLog(@"Squares and square roots:\n%@",
-            [[[numbers multiMap: @[identity, square, squareRoot]]
+            [[[numbers mapAll: @[identity, square, squareRoot]]
                 map:join] join: @"\n"]);
 
         NSLog(@"\nGenerators");
@@ -198,7 +198,7 @@ int main(int argc, const char * argv[]) {
         NSArray *repeaters = [[numbers limit:3] transforms:^(id number, id value) {
             return [number copiesOf: value];
         }];
-        NSLog(@"%@", [[[[colors multiMap:repeaters] childMap:join] map:join] join:@"\n"]);
+        NSLog(@"%@", [[[[colors mapAll:repeaters] childMap:join] map:join] join:@"\n"]);
         
         NSLog(@"\nReplace");
 

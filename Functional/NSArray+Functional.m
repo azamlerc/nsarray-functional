@@ -135,7 +135,7 @@
     return result;
 }
 
-- (NSArray *) multiMap:(NSArray *)blocks {
+- (NSArray *) mapAll:(NSArray *)blocks {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {
         [result addObject: [object applyAll:blocks]];
