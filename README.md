@@ -2,6 +2,40 @@
 
 An Objective-C category that adds functional programming methods to NSArray.
 
+## Contents
+
+- [Generate](#generate)
+- [Numbers in Range](#numbers-in-range)
+- [Each](#each)
+- [Every](#every)
+- [Any](#any)
+- [Contains Objects](#contains-objects)
+- [Find](#find)
+- [Map](#map)
+- [Indexed Map](#indexed-map)
+- [Matrix Map](#matrix-map)
+- [Square Map](#square-map)
+- [Nested Map](#nested-map)
+- [Multi Map](#mult-map)
+- [Replace](#replace)
+- [Filter](#filter)
+- [Remove](#remove)
+- [Filter Objects](#filter-objects)
+- [Remove Objects](#remove-objects)
+- [Reduce](#reduce)
+- [Sort](#sort)
+- [Sort By](#sort-by)
+- [Reverse](#reverse)
+- [Unique](#unique)
+- [Limit](#limit)
+- [Join](#join)
+- [Random Object](#random-object)
+- [Shuffle](#shuffle)
+- [Zip](#zip)
+- [Flatten](#flatten)
+- [Concat](#concat)
+- [Four Fours](#four-fours)
+
 ## Generate
 
 `+ (NSArray *) generate:(id(^)(void))block count:(int)count;`
@@ -314,7 +348,7 @@ Operation sum = ^(NSNumber *value1, NSNumber *value2) {
 
 `- (NSArray *) sort;`
 
-Returns an array sorted using the compare: selector.
+Returns an array sorted using the `compare:` selector.
 
 `- (NSArray *) sort:(NSComparator)block;`
 
@@ -410,7 +444,7 @@ Returns a random object from the array.
 ```
 [colors randomObject]
 ```
-purple-
+purple
 
 ## Shuffle
 
@@ -432,7 +466,7 @@ Returns an array with the objects in a random order.
 
 `- (NSArray *) zip:(NSArray *)objects;`
 
-Interleaves items with objects from the other array.
+Interleaves items with objects from the other array. The length does not need to be the same.
 
 ```
 [numbers zip:colors]
