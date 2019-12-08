@@ -30,7 +30,7 @@
     return result;
 }
 
-+ (NSArray *) numbersInRange:(NSRange)range {
++ (NSArray *) range:(NSRange)range {
     NSMutableArray *result = [NSMutableArray array];
     for (NSUInteger i = range.location; i < range.length + range.location; i++) {
         [result addObject:[NSNumber numberWithDouble: i]];

@@ -30,7 +30,7 @@ typedef id(^Operation)(id, id);
                  count:(int)count;
 
 // Generates an array of numbers in the given range.
-+ (NSArray *) numbersInRange:(NSRange)range;
++ (NSArray *) range:(NSRange)range;
 
 // Performs the block on each object in the array.
 - (void) each:(void(^)(id))block;

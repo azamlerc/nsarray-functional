@@ -71,7 +71,7 @@ NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
 }
 
 void fourFours() {
-    NSArray *target = [NSArray numbersInRange:NSMakeRange(1, 100)];
+    NSArray *target = [NSArray range:NSMakeRange(1, 100)];
     NSArray *fours1 = [@4 applyAll: @[decimalPoint, squareRoot, identity, factorial]];
     NSArray *fours2 = combineFours(fours1, fours1);
     NSArray *fours3 = combineFours(fours1, fours2);

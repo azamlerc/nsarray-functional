@@ -4,44 +4,45 @@ An Objective-C category that adds functional programming methods to NSArray.
 
 ## Contents
 
-- [Blocks](#blocks)
-- [Times](#times)
-- [Generate](#generate)
-- [Numbers in Range](#numbers-in-range)
-- [Apply](#apply)
-- [Apply All](#apply-all)
-- [Copies](#copies)
-- [Copies Of](#copies-of)
-- [Each](#each)
-- [Every](#every)
-- [Any](#any)
-- [Contains Objects](#contains-objects)
-- [Find](#find)
-- [Map](#map)
-- [Indexed Map](#indexed-map)
-- [Matrix Map](#matrix-map)
-- [Square Map](#square-map)
-- [Child Map](#child-map)
-- [Nested Map](#nested-map)
-- [Multi Map](#multi-map)
-- [Replace](#replace)
-- [Filter](#filter)
-- [Remove](#remove)
-- [Filter Objects](#filter-objects)
-- [Remove Objects](#remove-objects)
-- [Reduce](#reduce)
-- [Sort](#sort)
-- [Sort By](#sort-by)
-- [Reverse](#reverse)
-- [Unique](#unique)
-- [Limit](#limit)
-- [Join](#join)
-- [Random Object](#random-object)
-- [Shuffle](#shuffle)
-- [Zip](#zip)
-- [Flatten](#flatten)
-- [Concat](#concat)
-- [Four Fours](#four-fours)
+- [Blocks](#blocks): typedefs for block types
+- [Times](#times): call a block several times
+- [Generate](#generate): call a block several times
+- [Range](#range): array with range of numbers
+- [Apply](#apply): call a block on an object
+- [Apply All](#apply-all): call several blocks on an object
+- [Copies](#copies): array of copies of an object
+- [Copies Of](#copies-of): array of copies of an object
+- [Each](#each): call a block on each object
+- [Every](#every): check if every object passes a test
+- [Any](#any): check if any object passes a test
+- [Contains Objects](#contains-objects): check if an array contains some objects
+- [Find](#find): find an object in the array
+- [Map](#map): transform each object in the array
+- [Indexed Map](#indexed-map): transform with index
+- [Matrix Map](#matrix-map): create a matrix using another array
+- [Square Map](#square-map): call a block on all combinations of two values
+- [Child Map](#child-map): transform all children in a 2D array
+- [Nested Map](#nested-map): transform all objects in a nested array
+- [Multi Map](#multi-map): call several blocks on each object
+- [Replace](#replace): replace all objects using a dictionary
+- [Filter](#filter): objects that pass a test
+- [Remove](#remove): objects that don't pass a test
+- [Filter Objects](#filter-objects): objects that are in another array
+- [Remove Objects](#remove-objects): objects that aren't in another array
+- [Reduce](#reduce): iterate over the array using an accumulator block
+- [Sort](#sort): sort using a comparator
+- [Sort By](#sort-by): sort by performing a calculation on each object
+- [Reverse](#reverse): reverse the array
+- [Unique](#unique): remove duplicates
+- [Limit](#limit): just a few objects
+- [Join](#join): convert array to string
+- [Nested Join](#nested-join): convert nested array to string
+- [Random Object](#random-object): random object from the array
+- [Shuffle](#shuffle): random order
+- [Zip](#zip): alternating objects from two arrays
+- [Flatten](#flatten): nested array to flat array
+- [Concat](#concat): concatenate two arrays
+- [Four Fours](#four-fours): put it all together!
 
 ## Blocks
 
@@ -673,7 +674,7 @@ NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
 }
 
 void fourFours() {
-    NSArray *target = [NSArray numbersInRange:NSMakeRange(1, 100)];
+    NSArray *target = [NSArray range:NSMakeRange(1, 100)];
     NSArray *fours1 = [@4 applyAll: @[decimalPoint, squareRoot, identity, factorial]];
     NSArray *fours2 = combineFours(fours1, fours1);
     NSArray *fours3 = combineFours(fours1, fours2);
