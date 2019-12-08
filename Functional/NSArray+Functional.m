@@ -32,7 +32,7 @@
     }
 }
 
-- (BOOL) every:(BOOL(^)(id object))block {
+- (BOOL) every:(Test)block {
     for (id object in self) {
         if (!block(object)) {
             return NO;
@@ -41,7 +41,7 @@
     return YES;
 }
 
-- (BOOL) any:(BOOL(^)(id object))block {
+- (BOOL) any:(Test)block {
     for (id object in self) {
         if (block(object)) {
             return YES;
@@ -60,7 +60,7 @@
     return YES;
 }
 
-- (id) find:(BOOL(^)(id object))block {
+- (id) find:(Test)block {
     for (id object in self) {
         if (block(object)) {
             return object;
@@ -69,7 +69,7 @@
     return nil;
 }
 
-- (NSArray *) map:(id(^)(id object))block {
+- (NSArray *) map:(Transform)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {
         [result addObject:block(object)];
@@ -115,7 +115,7 @@
     return [self matrixMap:block objects:self];
 }
 
-- (NSArray *) nestedMap:(id(^)(id object))block {
+- (NSArray *) nestedMap:(Transform)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {
         if ([object isKindOfClass:[NSArray class]]) {
@@ -136,7 +136,7 @@
     return result;
 }
 
-- (NSArray *) filter:(BOOL(^)(id object))block {
+- (NSArray *) filter:(Test)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {
         if (block(object)) {
@@ -146,7 +146,7 @@
     return result;
 }
 
-- (NSArray *) remove:(BOOL(^)(id object))block {
+- (NSArray *) remove:(Test)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {
         if (!block(object)) {
