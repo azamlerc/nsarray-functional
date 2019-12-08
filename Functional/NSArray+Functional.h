@@ -134,8 +134,11 @@ typedef id(^Operation)(id, id);
 // Returns an initial slice of the array with a length up to the limit.
 - (NSArray *) limit:(int)limit;
 
-// Joins the items in the array using commas.
+// Joins the items in the array using commas, in square brackets.
 - (NSString *) join;
+
+// Recursively joins the items in the array using commas, in square brackets.
+- (NSString *) nestedJoin;
 
 // Joins the items in the array using the separator.
 // Just an alias for the componentsJoinedByString: method.
@@ -162,7 +165,7 @@ typedef id(^Operation)(id, id);
 @interface NSObject (Functional)
 
 // Calls the block on the object and returns the result.
-- (id) apply:(id(^)(id))block;
+- (id) apply:(Transform)block;
 
 // Calls the blocks on the object and returns the results.
 - (NSArray *) applyAll:(NSArray *)blocks;

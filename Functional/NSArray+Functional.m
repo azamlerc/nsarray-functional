@@ -254,7 +254,19 @@
 }
 
 - (NSString *) join {
-    return [self join: @", "];
+    return [NSString stringWithFormat: @"[%@]", [self join: @", "]];
+}
+
+- (NSString *) nestedJoin {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        if ([object isKindOfClass:[NSArray class]]) {
+            [result addObject: [object nestedJoin]];
+        } else {
+            [result addObject: object];
+        }
+    }
+    return [result join];
 }
 
 - (NSString *) join:(NSString *)separator {
@@ -309,7 +321,7 @@
 
 @implementation NSObject (Functional)
 
-- (id) apply:(id(^)(id))block {
+- (id) apply:(Transform)block {
     return block(self);
 }
 

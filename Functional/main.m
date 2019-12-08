@@ -57,7 +57,7 @@ Transform divide = ^(Tuple *tuple) {
     return [NSNumber numberWithDouble: roundDouble(tuple.first / tuple.second)];
 };
 Transform join = ^(id array) {
-     return [NSString stringWithFormat: @"[%@]", [array join]];
+     return [array join];
 };
 
 NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
@@ -173,7 +173,7 @@ int main(int argc, const char * argv[]) {
         NSLog(@"\nNested Map");
 
         NSArray *nested = @[@[@1, @2], @[@3, @[@4, @[@5, @[@6]]]]];
-        NSLog(@"Squared nested array: %@", [[[nested nestedMap:square] flatten] join]);
+        NSLog(@"Squared nested array: %@", [[nested nestedMap:square] nestedJoin]);
 
         NSLog(@"\nMulti Map");
 

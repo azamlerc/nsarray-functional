@@ -65,7 +65,7 @@ A block that takes two objects, performs and operation on them and returns the r
 
 ## Times
 
-`- (NSArray *) times:(id(^)(void))block;`
+`- (NSArray *) times:(Generator)block;`
 
 Returns a new array by calling the block a given number of times and returning the results.
 
@@ -78,7 +78,7 @@ NSArray *randomNumbers = [@10 times:^{
 
 ## Generate
 
-`+ (NSArray *) generate:(id(^)(void))block count:(int)count;`
+`+ (NSArray *) generate:(Generator)block count:(int)count;`
 
 Returns a new array by calling the block a given number of times and returning the results.
 
@@ -102,7 +102,7 @@ NSArray *numbers = [NSArray numbersInRange:NSMakeRange(1, 100)];
 
 ## Apply
 
-`- (id) apply:(id(^)(id))block;`
+`- (id) apply:(Transform)block;`
 
 Calls the block on the object and returns the result
 
@@ -349,16 +349,16 @@ for (Generator greeter in greeters) {
     NSLog(@"%@", [greeter() join]);
 }
 ```
-hi  
-hi, hi  
-hi, hi, hi  
-hi, hi, hi, hi  
-hi, hi, hi, hi, hi  
-hi, hi, hi, hi, hi, hi  
-hi, hi, hi, hi, hi, hi, hi  
-hi, hi, hi, hi, hi, hi, hi, hi  
-hi, hi, hi, hi, hi, hi, hi, hi, hi  
-hi, hi, hi, hi, hi, hi, hi, hi, hi, hi
+[hi]  
+[hi, hi]  
+[hi, hi, hi]  
+[hi, hi, hi, hi]  
+[hi, hi, hi, hi, hi]  
+[hi, hi, hi, hi, hi, hi]  
+[hi, hi, hi, hi, hi, hi, hi]  
+[hi, hi, hi, hi, hi, hi, hi, hi]  
+[hi, hi, hi, hi, hi, hi, hi, hi, hi]  
+[hi, hi, hi, hi, hi, hi, hi, hi, hi, hi]
 
 ## Transforms
 
@@ -567,7 +567,12 @@ Returns an initial slice of the array with a length up to the limit.
 
 `- (NSString *) join;`
 
-Joins the items in the array using commas.
+Joins the items in the array using commas, in square brackets.
+
+```
+[colors join:]
+```
+[red, orange, yellow, green, blue, purple]
 
 `- (NSString *) join:(NSString *)separator;`
 
@@ -577,6 +582,17 @@ Joins the items in the array using the separator. Alias for `componentsJoinedByS
 [colors join:" - "]
 ```
 red - orange - yellow - green - blue - purple
+
+## Nested Join
+
+`- (NSString *) nestedJoin;`
+
+Recursively joins the items in the array using commas, in square brackets.
+
+```
+[@[@[@1, @2], @[@3, @[@4, @[@5, @[@6]]]]] nestedJoin]
+```
+[[1, 2], [3, [4, [5, [6]]]]]
 
 ## Random Object
 
