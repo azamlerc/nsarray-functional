@@ -4,8 +4,11 @@ An Objective-C category that adds functional programming methods to NSArray.
 
 ## Contents
 
+- [Times](#times)
 - [Generate](#generate)
 - [Numbers in Range](#numbers-in-range)
+- [Apply](#apply)
+- [Apply All](#apply-all)
 - [Each](#each)
 - [Every](#every)
 - [Any](#any)
@@ -36,6 +39,19 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Concat](#concat)
 - [Four Fours](#four-fours)
 
+## Times
+
+`- (NSArray *) times:(id(^)(void))block;`
+
+Returns a new array by calling the block a given number of times and returning the results.
+
+```
+NSArray *randomNumbers = [@10 times:^id{
+    return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
+}];
+```
+[14, 84, 2, 78, 100, 95, 54, 4, 100, 32]
+
 ## Generate
 
 `+ (NSArray *) generate:(id(^)(void))block count:(int)count;`
@@ -44,8 +60,7 @@ Returns a new array by calling the block a given number of times and returning t
 
 ```
 NSArray *randomNumbers = [NSArray generate:^id{
-    int value = arc4random_uniform(100) + 1;
-    return [NSNumber numberWithInt: value];
+    return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
 } count:10];
 ```
 [14, 84, 2, 78, 100, 95, 54, 4, 100, 32]
@@ -60,6 +75,28 @@ Generates an array of numbers in the given range.
 NSArray *numbers = [NSArray numbersInRange:NSMakeRange(1, 100)];
 ```
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+## Apply
+
+`- (id) apply:(id(^)(id))block;`
+
+Calls the block on the object and returns the result
+
+```
+[@25 apply:squareRoot]
+```
+5
+
+## Apply All
+
+`- (NSArray *) applyAll:(NSArray *)blocks;`
+
+Calls the blocks on the object and returns the results.
+
+```
+[@4 applyAll: @[decimalPoint, squareRoot, identity, factorial]]
+```
+[0.4, 2, 4, 24]
 
 ## Each
 
@@ -515,19 +552,14 @@ NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
 
 void fourFours() {
     NSArray *target = [NSArray numbersInRange:NSMakeRange(1, 100)];
-    NSArray *unaryOps = @[decimalPoint, squareRoot, identity, factorial];
-    NSArray *fours1 = [[@[@4.0] multiMap: unaryOps] flatten];
+    NSArray *fours1 = [@4 applyAll: @[decimalPoint, squareRoot, identity, factorial]];
     NSArray *fours2 = combineFours(fours1, fours1);
     NSArray *fours3 = combineFours(fours1, fours2);
     NSArray *fours4 = [combineFours(fours1, fours3) concat:
                        combineFours(fours2, fours2)];
-    NSLog(@"One four: %@", fours1);
-    NSLog(@"Two fours: %@", fours2);
     NSLog(@"Found: %@", [target filterObjectsIn:fours4]);
     NSLog(@"Missing: %@", [target removeObjectsIn:fours4]);
 }
 ```
-One four: 0.4, 2, 4, 24  
-Two fours: -23.6, -22, -20, -3.6, -2, -1.6, 0, 0.016667, 0.083333, 0.1, 0.16, 0.166667, 0.2, 0.5, 0.8, 1, 1.6, 2, 2.4, 3.6, 4, 4.4, 5, 6, 8, 9.6, 10, 12, 16, 20, 22, 23.6, 24.4, 26, 28, 48, 60, 96, 576  
 Found: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 78, 79, 80, 82, 83, 84, 85, 86, 88, 89, 90, 91, 92, 94, 95, 96, 97, 98, 100  
 Missing: 73, 77, 81, 87, 93, 99  

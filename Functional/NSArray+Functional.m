@@ -7,6 +7,14 @@
 #import "NSArray+Functional.h"
 #import <Foundation/Foundation.h>
 
+@implementation NSNumber (Functional)
+
+- (NSArray *) times:(id(^)(void))block {
+    return [NSArray generate:block count:[self intValue]];
+}
+
+@end
+
 @implementation NSArray (Functional)
 
 + (NSArray *) generate:(id(^)(void))block
@@ -89,11 +97,7 @@
 - (NSArray *) multiMap:(NSArray *)blocks {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {
-        NSMutableArray *line = [NSMutableArray array];
-        for (id(^block)(id) in blocks) {
-            [line addObject:block(object)];
-        }
-        [result addObject: line];
+        [result addObject: [object applyAll:blocks]];
     }
     return result;
 }
@@ -271,7 +275,19 @@
 
 @end
 
-@implementation NSObject (RandomObject)
+@implementation NSObject (Functional)
+
+- (id) apply:(id(^)(id))block {
+    return block(self);
+}
+
+- (NSArray *) applyAll:(NSArray *)blocks {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id(^block)(id) in blocks) {
+        [result addObject:block(self)];
+    }
+    return result;
+}
 
 - (NSComparisonResult) randomCompare: (NSObject *) object {
     return (arc4random_uniform(100) % 2 == 0) ? NSOrderedAscending : NSOrderedDescending;

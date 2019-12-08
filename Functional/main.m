@@ -49,17 +49,15 @@ Transform squareRoot = ^(NSNumber *value) {
 Transform factorial = ^(NSNumber *value) {
     return [NSNumber numberWithDouble: fact([value intValue])];
 };
-
 Operation sum = ^(NSNumber *value1, NSNumber *value2) {
     return [NSNumber numberWithDouble: [value1 doubleValue] + [value2 doubleValue]];
 };
-
 id (^join)(id) = ^id(id array) {
      return [NSString stringWithFormat: @"[%@]", [array join]];
 };
 
-NSArray *combineFours(NSArray *fa, NSArray *fb) {
-    return [[[[[[[fa matrixMap:[Tuple make] objects:fb]
+NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
+    return [[[[[[[foursA matrixMap:[Tuple make] objects:foursB]
                  nestedMap:[Tuple bothWays]]
                 flatten]
                multiMap: @[add, subtract, multiply, divide]]
@@ -70,14 +68,11 @@ NSArray *combineFours(NSArray *fa, NSArray *fb) {
 
 void fourFours() {
     NSArray *target = [NSArray numbersInRange:NSMakeRange(1, 100)];
-    NSArray *unaryOps = @[decimalPoint, squareRoot, identity, factorial];
-    NSArray *fours1 = [[@[@4.0] multiMap: unaryOps] flatten];
+    NSArray *fours1 = [@4 applyAll: @[decimalPoint, squareRoot, identity, factorial]];
     NSArray *fours2 = combineFours(fours1, fours1);
     NSArray *fours3 = combineFours(fours1, fours2);
     NSArray *fours4 = [combineFours(fours1, fours3) concat:
                        combineFours(fours2, fours2)];
-    NSLog(@"One four: %@", [fours1 join]);
-    NSLog(@"Two fours: %@", [fours2 join]);
     NSLog(@"Found: %@", [[target filterObjectsIn:fours4] join]);
     NSLog(@"Missing: %@", [[target removeObjectsIn:fours4] join]);
 }
@@ -93,13 +88,20 @@ int main(int argc, const char * argv[]) {
             return [NSNumber numberWithInt: ++i];
         } count:10];
 
-        NSArray *randomNumbers = [NSArray generate:^id{
-            int value = arc4random_uniform(100) + 1;
-            return [NSNumber numberWithInt: value];
-        } count:10];
+        NSArray *randomNumbers = [@10 times:^id{
+            return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
+        }];
 
         NSLog(@"Random numbers: %@", [randomNumbers join]);
 
+        NSLog(@"\nApply");
+        
+        NSLog(@"Square root of 25: %@", [@25 apply:squareRoot]);
+
+        NSLog(@"\nApply All");
+        
+        NSLog(@"1 Four: %@", [[@4.0 applyAll: @[decimalPoint, squareRoot, identity, factorial]] join]);
+                           
         NSLog(@"\nEach");
         [colors each:^(id value) {
             NSLog(@"  %@", value);

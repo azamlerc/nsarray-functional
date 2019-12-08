@@ -10,6 +10,14 @@ typedef BOOL(^Test)(id);
 typedef id(^Transform)(id);
 typedef id(^Operation)(id, id);
 
+@interface NSNumber (Functional)
+
+// Returns a new array by calling the block a
+// given number of times and returning the results.
+- (NSArray *) times:(id(^)(void))block;
+
+@end
+
 @interface NSArray (Functional)
 
 // Returns a new array by calling the block a
@@ -133,7 +141,13 @@ typedef id(^Operation)(id, id);
 
 @end
 
-@interface NSObject (RandomObject)
+@interface NSObject (Functional)
+
+// Calls the block on the object and returns the result.
+- (id) apply:(id(^)(id))block;
+
+// Calls the blocks on the object and returns the results.
+- (NSArray *) applyAll:(NSArray *)blocks;
 
 - (NSComparisonResult) randomCompare: (NSObject *) object;
 
