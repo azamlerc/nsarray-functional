@@ -143,6 +143,12 @@
     return result;
 }
 
+- (NSArray *) callAll {
+    return [self map:^(Generator generator) {
+        return generator();
+    }];
+}
+
 - (NSArray *) generators:(Transform)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {

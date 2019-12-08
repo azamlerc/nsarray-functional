@@ -20,6 +20,9 @@ int fact(int n) {
   return n > 0 ? n * fact(n - 1) : 1;
 }
 
+Generator randomNumber = ^{
+    return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
+};
 Transform identity = ^(id value) {
     return value;
 };
@@ -92,11 +95,14 @@ int main(int argc, const char * argv[]) {
             return [NSNumber numberWithInt: ++i];
         } count:10];
 
-        NSArray *randomNumbers = [@10 times:^{
-            return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
-        }];
-
+        NSArray *randomNumbers = [@10 times:randomNumber];
         NSLog(@"Random numbers: %@", [randomNumbers join]);
+
+        NSDate *now = [NSDate date];
+        NSArray *timeIntervals = [@5 times:^{
+            return [NSNumber numberWithDouble: -[now timeIntervalSinceNow]];
+        }];
+        NSLog(@"TimeIntervals:\n%@", [timeIntervals join: @"\n"]);
 
         NSLog(@"\nApply");
         
@@ -181,14 +187,17 @@ int main(int argc, const char * argv[]) {
             [[[numbers mapAll: @[identity, square, squareRoot]]
                 map:join] join: @"\n"]);
 
+        NSLog(@"\nCall All");
+
+        NSLog(@"Random numbers: %@",
+              [[[@10 copiesOf:randomNumber] callAll] join]);
+
         NSLog(@"\nGenerators");
 
         NSArray *greeters = [numbers generators:^(id number) {
             return [number copiesOf: @"hi"];
         }];
-        for (Generator greeter in greeters) {
-            NSLog(@"%@", [greeter() join]);
-        }
+        NSLog(@"%@", [[[greeters callAll] map:join] join: @"\n"]);
         
         NSLog(@"\nTransforms");
 

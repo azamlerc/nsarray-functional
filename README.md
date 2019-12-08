@@ -48,10 +48,6 @@ An Objective-C category that adds functional programming methods to NSArray.
 
 The following type definitions make working with block types easier. 
 
-`typedef BOOL(^Test)(id);`
-
-A block that takes an object, performs a test and returns a boolean.
-
 `typedef id(^Generator)(void);`
 
 A block that takes no arguments, generates an object and returns it.
@@ -64,18 +60,34 @@ A block that takes an object, transforms it in some way and returns another obje
 
 A block that takes two objects, performs and operation on them and returns the result.
 
+`typedef BOOL(^Test)(id);`
+
+A block that takes an object, performs a test and returns a boolean.
+
 ## Times
+
+*NSNumber*
 
 `- (NSArray *) times:(Generator)block;`
 
 Returns a new array by calling the block a given number of times and returning the results.
 
 ```
-NSArray *randomNumbers = [@10 times:^{
-    return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
-}];
+NSArray *randomNumbers = [@10 times:randomNumber];
 ```
 [14, 84, 2, 78, 100, 95, 54, 4, 100, 32]
+
+```
+NSDate *now = [NSDate date];
+[@5 times:^{
+    return [NSNumber numberWithDouble: -[now timeIntervalSinceNow]];
+}]
+```
+1.299e-05  
+3.790e-05  
+3.993e-05  
+4.088e-05  
+4.196e-05
 
 ## Generate
 
@@ -84,9 +96,7 @@ NSArray *randomNumbers = [@10 times:^{
 Returns a new array by calling the block a given number of times and returning the results.
 
 ```
-NSArray *randomNumbers = [NSArray generate:^{
-    return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
-} count:10];
+NSArray *randomNumbers = [NSArray generate:randomNumber count:10];
 ```
 [14, 84, 2, 78, 100, 95, 54, 4, 100, 32]
 
@@ -103,6 +113,8 @@ NSArray *numbers = [NSArray numbersInRange:NSMakeRange(1, 100)];
 
 ## Apply
 
+*NSObject*
+
 `- (id) apply:(Transform)block;`
 
 Calls the block on the object and returns the result
@@ -114,6 +126,8 @@ Calls the block on the object and returns the result
 
 ## Apply All
 
+*NSObject*
+
 `- (NSArray *) applyAll:(NSArray *)blocks;`
 
 Calls the blocks on the object and returns the results.
@@ -123,7 +137,20 @@ Calls the blocks on the object and returns the results.
 ```
 [0.4, 2, 4, 24]
 
+## Call All
+
+`- (NSArray *) callAll;`
+
+Calls each generator block in the array and returns the results.
+
+```
+[[@10 copiesOf:randomNumber] callAll]
+```
+[16, 34, 56, 92, 82, 38, 42, 80, 20, 84]
+
 ## Copies
+
+*NSObject*
 
 `- (NSArray *) copies:(NSUInteger)count;`
 
@@ -135,6 +162,8 @@ Returns an array with the recipient a given number of times.
 [Yeah!, Yeah!, Yeah!]
 
 ## Copies Of
+
+*NSNumber*
 
 `- (NSArray *) copiesOf:(id)value;`
 
@@ -346,9 +375,7 @@ Returns an array of generator blocks that close over each value in the array and
 NSArray *greeters = [numbers generators:^(id number) {
     return [number copiesOf: @"hi"];
 }];
-for (Generator greeter in greeters) {
-    NSLog(@"%@", [greeter() join]);
-}
+[greeters callAll]
 ```
 [hi]  
 [hi, hi]  
