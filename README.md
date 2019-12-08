@@ -16,7 +16,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Matrix Map](#matrix-map)
 - [Square Map](#square-map)
 - [Nested Map](#nested-map)
-- [Multi Map](#mult-map)
+- [Multi Map](#multi-map)
 - [Replace](#replace)
 - [Filter](#filter)
 - [Remove](#remove)
