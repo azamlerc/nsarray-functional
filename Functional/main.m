@@ -98,12 +98,6 @@ int main(int argc, const char * argv[]) {
         NSArray *randomNumbers = [@10 times:randomNumber];
         NSLog(@"Random numbers: %@", [randomNumbers join]);
 
-        NSDate *now = [NSDate date];
-        NSArray *timeIntervals = [@5 times:^{
-            return [NSNumber numberWithDouble: -[now timeIntervalSinceNow]];
-        }];
-        NSLog(@"TimeIntervals:\n%@", [timeIntervals join: @"\n"]);
-
         NSLog(@"\nApply");
         
         NSLog(@"Square root of 25: %@", [@25 apply:squareRoot]);
@@ -189,8 +183,11 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nCall All");
 
-        NSLog(@"Random numbers: %@",
-              [[[@10 copiesOf:randomNumber] callAll] join]);
+        NSDate *start = [NSDate date];
+        Generator timeInterval = ^{
+            return [NSNumber numberWithDouble: [[NSDate date] timeIntervalSinceDate:start]];
+        };
+        NSLog(@"Time Intervals:\n%@", [[[@5 copiesOf:timeInterval] callAll] join: @"\n"]);
 
         NSLog(@"\nGenerators");
 

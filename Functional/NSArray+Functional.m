@@ -144,9 +144,11 @@
 }
 
 - (NSArray *) callAll {
-    return [self map:^(Generator generator) {
-        return generator();
-    }];
+    NSMutableArray *result = [NSMutableArray array];
+    for (Generator generator in self) {
+        [result addObject: generator()];
+    }
+    return result;
 }
 
 - (NSArray *) generators:(Transform)block {

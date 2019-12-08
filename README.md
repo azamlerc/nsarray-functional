@@ -78,18 +78,6 @@ NSArray *randomNumbers = [@10 times:randomNumber];
 ```
 [14, 84, 2, 78, 100, 95, 54, 4, 100, 32]
 
-```
-NSDate *now = [NSDate date];
-[@5 times:^{
-    return [NSNumber numberWithDouble: -[now timeIntervalSinceNow]];
-}]
-```
-1.299e-05  
-3.790e-05  
-3.993e-05  
-4.088e-05  
-4.196e-05
-
 ## Generate
 
 `+ (NSArray *) generate:(Generator)block count:(int)count;`
@@ -145,9 +133,17 @@ Calls the blocks on the object and returns the results.
 Calls each generator block in the array and returns the results.
 
 ```
-[[@10 copiesOf:randomNumber] callAll]
+NSDate *start = [NSDate date];
+Generator timeInterval = ^{
+    return [NSNumber numberWithDouble: [[NSDate date] timeIntervalSinceDate:start]];
+};
+[[@5 copiesOf:timeInterval] callAll]
 ```
-[16, 34, 56, 92, 82, 38, 42, 80, 20, 84]
+2.598762512207031e-05  
+3.302097320556641e-05  
+3.397464752197266e-05  
+3.492832183837891e-05  
+3.600120544433594e-05
 
 ## Copies
 
