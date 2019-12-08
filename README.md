@@ -129,11 +129,20 @@ Calls the block on every object in the array along with the index and returns an
 Creates a marrix that is the result of calling the block on every combination of objects from this and the other array.
 
 ```
-[[colors indexedMap:^id(NSUInteger i, id value) {
-    return [NSString stringWithFormat: @"%lu %@", i, value];
-}]
+[numbers matrixMap:^id(id number, id color) {
+    return [NSString stringWithFormat: @"%@ %@", number, color];
+} objects:colors]
 ```
-[0 red, 1 orange, 2 yellow, 3 green, 4 blue, 5 purple]
+[1 red, 1 orange, 1 yellow, 1 green, 1 blue, 1 purple]  
+[2 red, 2 orange, 2 yellow, 2 green, 2 blue, 2 purple]  
+[3 red, 3 orange, 3 yellow, 3 green, 3 blue, 3 purple]  
+[4 red, 4 orange, 4 yellow, 4 green, 4 blue, 4 purple]  
+[5 red, 5 orange, 5 yellow, 5 green, 5 blue, 5 purple]  
+[6 red, 6 orange, 6 yellow, 6 green, 6 blue, 6 purple]  
+[7 red, 7 orange, 7 yellow, 7 green, 7 blue, 7 purple]  
+[8 red, 8 orange, 8 yellow, 8 green, 8 blue, 8 purple]  
+[9 red, 9 orange, 9 yellow, 9 green, 9 blue, 9 purple]  
+[10 red, 10 orange, 10 yellow, 10 green, 10 blue, 10 purple]  
 
 ## Square Map
 
