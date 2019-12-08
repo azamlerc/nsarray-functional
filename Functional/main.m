@@ -12,10 +12,6 @@
 // get rid of NSLog annoying date strings
 #define NSLog(FORMAT, ...) printf("%s\n", [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
 
-typedef NSNumber *(^UnaryNumberBlock)(NSNumber *);
-typedef NSNumber *(^BinaryNumberBlock)(NSNumber *, NSNumber *);
-typedef NSNumber *(^TupleBlock)(Tuple *);
-
 double roundDouble(double value) {
     return round(1000000 * value) / 1000000;
 }
@@ -23,38 +19,38 @@ int fact(int n) {
   return n > 0 ? n * fact(n - 1) : 1;
 }
 
-TupleBlock add = ^(Tuple *tuple) {
+Transform add = ^(Tuple *tuple) {
     return [NSNumber numberWithDouble: tuple.first + tuple.second];
 };
-TupleBlock subtract = ^(Tuple *tuple) {
+Transform subtract = ^(Tuple *tuple) {
     return [NSNumber numberWithDouble: tuple.first - tuple.second];
 };
-TupleBlock multiply = ^(Tuple *tuple) {
+Transform multiply = ^(Tuple *tuple) {
     return [NSNumber numberWithDouble: tuple.first * tuple.second];
 };
-TupleBlock divide = ^(Tuple *tuple) {
+Transform divide = ^(Tuple *tuple) {
     return [NSNumber numberWithDouble: roundDouble(tuple.first / tuple.second)];
 };
-UnaryNumberBlock identity = ^(NSNumber *value) {
+Transform identity = ^(NSNumber *value) {
     return value;
 };
-UnaryNumberBlock decimalPoint = ^(NSNumber *value) {
+Transform decimalPoint = ^(NSNumber *value) {
     return [NSNumber numberWithDouble: [value doubleValue] / 10.0];
 };
-UnaryNumberBlock twice = ^(NSNumber *value) {
+Transform twice = ^(NSNumber *value) {
     return [NSNumber numberWithInt: [value intValue] * 2];
 };
-UnaryNumberBlock square = ^(NSNumber *value) {
+Transform square = ^(NSNumber *value) {
     return [NSNumber numberWithInt: [value intValue] * [value intValue]];
 };
-UnaryNumberBlock squareRoot = ^(NSNumber *value) {
+Transform squareRoot = ^(NSNumber *value) {
     return [NSNumber numberWithDouble: sqrt([value doubleValue])];
 };
-UnaryNumberBlock factorial = ^(NSNumber *value) {
+Transform factorial = ^(NSNumber *value) {
     return [NSNumber numberWithDouble: fact([value intValue])];
 };
 
-BinaryNumberBlock sum = ^(NSNumber *value1, NSNumber *value2) {
+Operation sum = ^(NSNumber *value1, NSNumber *value2) {
     return [NSNumber numberWithDouble: [value1 doubleValue] + [value2 doubleValue]];
 };
 
@@ -88,10 +84,8 @@ void fourFours() {
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        
-
         NSArray *colors = @[@"red", @"orange", @"yellow", @"green", @"blue", @"purple"];
-        
+
         NSLog(@"Generate");
 
         __block int i = 0;
@@ -110,7 +104,7 @@ int main(int argc, const char * argv[]) {
         [colors each:^(id value) {
             NSLog(@"  %@", value);
         }];
-        
+
         NSLog(@"\nEvery");
 
         NSLog(@"All colors contain letter E: %@", [colors every:^BOOL(id value) {
@@ -124,29 +118,29 @@ int main(int argc, const char * argv[]) {
         }] ? @"yes" : @"no");
 
         NSLog(@"\nContains Objects");
-        
+
         NSLog(@"Colors contain blue and purple: %@", [colors containsObjects:@[@"blue", @"purple"]] ? @"yes" : @"no");
 
         NSLog(@"\nFind");
-        
+
         NSLog(@"First color of length 4: %@", [colors find:^BOOL(id value) {
             return [value length] == 4;
         }]);
 
         NSLog(@"\nMap");
-        
+
         NSLog(@"Length of each color: %@", [[colors map:^id(id value) {
             return [NSNumber numberWithLong: [value length]];
         }] join]);
 
         NSLog(@"\nIndexed Map");
-        
+
         NSLog(@"Indexed colors: %@", [[colors indexedMap:^id(NSUInteger i, id value) {
             return [NSString stringWithFormat: @"%lu %@", i, value];
         }] join]);
 
         NSLog(@"\nSquare Map");
-        
+
         NSArray *multiplicationTable = [numbers squareMap:^id(id object1, id object2) {
             return [NSNumber numberWithInt: [object1 intValue] * [object2 intValue]];
         }];
@@ -154,7 +148,7 @@ int main(int argc, const char * argv[]) {
             [[multiplicationTable map:join] join: @"\n"]);
 
         NSLog(@"\nNested Map");
-        
+
         NSLog(@"Doubled multiplication table:\n%@",
             [[[multiplicationTable nestedMap:twice] map:join] join: @"\n"]);
 
@@ -223,7 +217,7 @@ int main(int argc, const char * argv[]) {
 
         NSArray *dupes = @[@1, @1, @1, @2, @2, @3];
         NSLog(@"Unique numbers: %@", [[[dupes unique] sort] join]);
-        
+
         NSLog(@"\nLimit");
 
         NSLog(@"First 3 colors: %@", [[colors limit:3] join]);
@@ -240,16 +234,20 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Shuffled numbers: %@", [[numbers shuffle] join]);
 
 
-        
+
         NSLog(@"\nZip");
 
         NSLog(@"Numbers and colors: %@", [[numbers zip:colors] join]);
-        
+
         NSLog(@"\nFlatten");
 
         NSArray *nested = @[@[@1, @2], @[@3, @[@4, @[@5, @[@6]]]]];
         NSLog(@"Nested array flattened: %@", [[nested flatten] join]);
         NSLog(@"Squared nested array: %@", [[[nested nestedMap:square] flatten] join]);
+
+        NSLog(@"\nConcat");
+
+        NSLog(@"Colors and numbers: %@", [[colors concat: numbers] join]);
 
         NSLog(@"\nFour Fours");
         fourFours();
