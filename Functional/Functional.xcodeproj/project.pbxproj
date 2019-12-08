@@ -47,7 +47,11 @@
 		4951D44A239C241100ADAB1F = {
 			isa = PBXGroup;
 			children = (
-				4951D455239C241100ADAB1F /* Functional */,
+				4951D456239C241100ADAB1F /* main.m */,
+				4951D45D239C245200ADAB1F /* NSArray+Functional.h */,
+				4951D45E239C245200ADAB1F /* NSArray+Functional.m */,
+				4951D462239C647200ADAB1F /* Tuple.h */,
+				4951D463239C650500ADAB1F /* Tuple.m */,
 				4951D454239C241100ADAB1F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,18 +62,6 @@
 				4951D453239C241100ADAB1F /* Functional */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		4951D455239C241100ADAB1F /* Functional */ = {
-			isa = PBXGroup;
-			children = (
-				4951D456239C241100ADAB1F /* main.m */,
-				4951D45D239C245200ADAB1F /* NSArray+Functional.h */,
-				4951D45E239C245200ADAB1F /* NSArray+Functional.m */,
-				4951D462239C647200ADAB1F /* Tuple.h */,
-				4951D463239C650500ADAB1F /* Tuple.m */,
-			);
-			path = Functional;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
