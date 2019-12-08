@@ -15,23 +15,12 @@
 double roundDouble(double value) {
     return round(1000000 * value) / 1000000;
 }
+
 int fact(int n) {
   return n > 0 ? n * fact(n - 1) : 1;
 }
 
-Transform add = ^(Tuple *tuple) {
-    return [NSNumber numberWithDouble: tuple.first + tuple.second];
-};
-Transform subtract = ^(Tuple *tuple) {
-    return [NSNumber numberWithDouble: tuple.first - tuple.second];
-};
-Transform multiply = ^(Tuple *tuple) {
-    return [NSNumber numberWithDouble: tuple.first * tuple.second];
-};
-Transform divide = ^(Tuple *tuple) {
-    return [NSNumber numberWithDouble: roundDouble(tuple.first / tuple.second)];
-};
-Transform identity = ^(NSNumber *value) {
+Transform identity = ^(id value) {
     return value;
 };
 Transform decimalPoint = ^(NSNumber *value) {
@@ -52,7 +41,22 @@ Transform factorial = ^(NSNumber *value) {
 Operation sum = ^(NSNumber *value1, NSNumber *value2) {
     return [NSNumber numberWithDouble: [value1 doubleValue] + [value2 doubleValue]];
 };
-id (^join)(id) = ^id(id array) {
+Operation product = ^(NSNumber *value1, NSNumber *value2) {
+    return [NSNumber numberWithDouble: [value1 doubleValue] * [value2 doubleValue]];
+};
+Transform add = ^(Tuple *tuple) {
+    return [NSNumber numberWithDouble: tuple.first + tuple.second];
+};
+Transform subtract = ^(Tuple *tuple) {
+    return [NSNumber numberWithDouble: tuple.first - tuple.second];
+};
+Transform multiply = ^(Tuple *tuple) {
+    return [NSNumber numberWithDouble: tuple.first * tuple.second];
+};
+Transform divide = ^(Tuple *tuple) {
+    return [NSNumber numberWithDouble: roundDouble(tuple.first / tuple.second)];
+};
+Transform join = ^(id array) {
      return [NSString stringWithFormat: @"[%@]", [array join]];
 };
 
@@ -84,11 +88,11 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Generate");
 
         __block int i = 0;
-        NSArray *numbers = [NSArray generate:^id{
+        NSArray *numbers = [NSArray generate:^{
             return [NSNumber numberWithInt: ++i];
         } count:10];
 
-        NSArray *randomNumbers = [@10 times:^id{
+        NSArray *randomNumbers = [@10 times:^{
             return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
         }];
 
@@ -102,6 +106,11 @@ int main(int argc, const char * argv[]) {
         
         NSLog(@"1 Four: %@", [[@4.0 applyAll: @[decimalPoint, squareRoot, identity, factorial]] join]);
                            
+        NSLog(@"\nCopies");
+        
+        NSLog(@"3 Yeahs: %@", [[@"Yeah!" copies:3] join: @" "]);
+        NSLog(@"3 Yeahs: %@", [[@3 copiesOf: @"Yeah!"] join: @" "]);
+
         NSLog(@"\nEach");
         [colors each:^(id value) {
             NSLog(@"  %@", value);
@@ -109,7 +118,7 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nEvery");
 
-        NSLog(@"All colors contain letter E: %@", [colors every:^BOOL(id value) {
+        NSLog(@"All colors contain letter E: %@", [colors every:^(id value) {
             return [value contains:@"e"];
         }] ? @"yes" : @"no");
 
@@ -131,35 +140,40 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nMap");
 
-        NSLog(@"Length of each color: %@", [[colors map:^id(id value) {
+        NSLog(@"Length of each color: %@", [[colors map:^(id value) {
             return [NSNumber numberWithLong: [value length]];
         }] join]);
 
         NSLog(@"\nIndexed Map");
 
-        NSLog(@"Indexed colors: %@", [[colors indexedMap:^id(NSUInteger i, id value) {
+        NSLog(@"Indexed colors: %@", [[colors indexedMap:^(NSUInteger i, id value) {
             return [NSString stringWithFormat: @"%lu %@", i, value];
         }] join]);
 
         NSLog(@"\nMatrix Map");
 
         NSLog(@"All number color combinations:\n%@",
-            [[[numbers matrixMap:^id(id number, id color) {
+            [[[numbers matrixMap:^(id number, id color) {
                 return [NSString stringWithFormat: @"%@ %@", number, color];
             } objects:colors] map:join] join: @"\n"]);
 
         NSLog(@"\nSquare Map");
 
-        NSArray *multiplicationTable = [numbers squareMap:^id(id object1, id object2) {
+        NSArray *multiplicationTable = [numbers squareMap:^(id object1, id object2) {
             return [NSNumber numberWithInt: [object1 intValue] * [object2 intValue]];
         }];
         NSLog(@"Multiplication table:\n%@",
             [[multiplicationTable map:join] join: @"\n"]);
 
-        NSLog(@"\nNested Map");
+        NSLog(@"\nChild Map");
 
         NSLog(@"Doubled multiplication table:\n%@",
-            [[[multiplicationTable nestedMap:twice] map:join] join: @"\n"]);
+            [[[multiplicationTable childMap:twice] map:join] join: @"\n"]);
+        
+        NSLog(@"\nNested Map");
+
+        NSArray *nested = @[@[@1, @2], @[@3, @[@4, @[@5, @[@6]]]]];
+        NSLog(@"Squared nested array: %@", [[[nested nestedMap:square] flatten] join]);
 
         NSLog(@"\nMulti Map");
 
@@ -167,6 +181,25 @@ int main(int argc, const char * argv[]) {
             [[[numbers multiMap: @[identity, square, squareRoot]]
                 map:join] join: @"\n"]);
 
+        NSLog(@"\nGenerators");
+
+        NSArray *greeters = [numbers generators:^(id number) {
+            return [number copiesOf: @"hi"];
+        }];
+        for (Generator greeter in greeters) {
+            NSLog(@"%@", [greeter() join]);
+        }
+        
+        NSLog(@"\nTransforms");
+
+        NSArray *multipliers = [numbers transforms:product];
+        NSLog(@"Multiples of 3: %@", [[@3 applyAll: multipliers] join]);
+
+        NSArray *repeaters = [[numbers limit:3] transforms:^(id number, id value) {
+            return [number copiesOf: value];
+        }];
+        NSLog(@"%@", [[[[colors multiMap:repeaters] childMap:join] map:join] join:@"\n"]);
+        
         NSLog(@"\nReplace");
 
         NSDictionary *frenchColors = @{
@@ -190,7 +223,7 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nRemove");
 
-        NSLog(@"Colors that don't start with G: %@", [[colors remove:^BOOL(id value) {
+        NSLog(@"Colors that don't start with G: %@", [[colors remove:^(id value) {
           return [value hasPrefix:@"g"];
         }] join]);
 
@@ -200,7 +233,7 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nReduce");
 
-        NSLog(@"Shortest color: %@", [colors reduce:^id(id acc, id value) {
+        NSLog(@"Shortest color: %@", [colors reduce:^(id acc, id value) {
             return [value length] <= [acc length] ? value : acc;
         }]);
         NSLog(@"Sum of numbers: %@", [numbers reduce:sum initial:0]);
@@ -209,11 +242,11 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"Colors sorted by default: %@", [[colors sort] join]);
 
-        NSLog(@"Colors sorted using block: %@", [[colors sort:^(NSString *a, NSString *b) {
+        NSLog(@"Colors sorted using block: %@", [[colors sort:^(id a, id b) {
             return [a compare: b];
         }] join]);
 
-        NSLog(@"Colors sorted by length: %@", [[colors sortBy:^NSUInteger(id value) {
+        NSLog(@"Colors sorted by length: %@", [[colors sortBy:^(id value) {
           return [value length];
         }] join]);
 
@@ -242,17 +275,13 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Shuffled colors: %@", [[colors shuffle] join]);
         NSLog(@"Shuffled numbers: %@", [[numbers shuffle] join]);
 
-
-
         NSLog(@"\nZip");
 
         NSLog(@"Numbers and colors: %@", [[numbers zip:colors] join]);
 
         NSLog(@"\nFlatten");
 
-        NSArray *nested = @[@[@1, @2], @[@3, @[@4, @[@5, @[@6]]]]];
         NSLog(@"Nested array flattened: %@", [[nested flatten] join]);
-        NSLog(@"Squared nested array: %@", [[[nested nestedMap:square] flatten] join]);
 
         NSLog(@"\nConcat");
 

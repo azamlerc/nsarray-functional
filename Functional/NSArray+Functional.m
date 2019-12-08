@@ -9,15 +9,19 @@
 
 @implementation NSNumber (Functional)
 
-- (NSArray *) times:(id(^)(void))block {
+- (NSArray *) times:(Generator)block {
     return [NSArray generate:block count:[self intValue]];
+}
+
+- (NSArray *) copiesOf:(id)value {
+    return [value copies:[self intValue]];
 }
 
 @end
 
 @implementation NSArray (Functional)
 
-+ (NSArray *) generate:(id(^)(void))block
++ (NSArray *) generate:(Generator)block
                  count:(int)count {
     NSMutableArray *result = [NSMutableArray array];
     for (NSUInteger i = 0; i < count; i++) {
@@ -34,7 +38,7 @@
     return result;
 }
 
-- (void) each:(void(^)(id object))block {
+- (void) each:(void(^)(id))block {
     for (id object in self) {
         block(object);
     }
@@ -85,7 +89,7 @@
     return result;
 }
 
-- (NSArray *) indexedMap:(id(^)(NSUInteger index, id object))block {
+- (NSArray *) indexedMap:(id(^)(NSUInteger, id))block {
     NSMutableArray *result = [NSMutableArray array];
     for (NSUInteger index = 0; index < [self count]; index++) {
         id object = [self objectAtIndex:index];
@@ -94,15 +98,7 @@
     return result;
 }
 
-- (NSArray *) multiMap:(NSArray *)blocks {
-    NSMutableArray *result = [NSMutableArray array];
-    for (id object in self) {
-        [result addObject: [object applyAll:blocks]];
-    }
-    return result;
-}
-
-- (NSArray *) matrixMap:(id(^)(id object1, id object2))block
+- (NSArray *) matrixMap:(Operation)block
                 objects:(NSArray *)objects {
     NSMutableArray *result = [NSMutableArray array];
     for (id object1 in self) {
@@ -115,8 +111,16 @@
     return result;
 }
 
-- (NSArray *) squareMap:(id(^)(id object1, id object2))block {
+- (NSArray *) squareMap:(Operation)block {
     return [self matrixMap:block objects:self];
+}
+
+- (NSArray *) childMap:(Transform)block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id array in self) {
+        [result addObject: [array map:block]];
+    }
+    return result;
 }
 
 - (NSArray *) nestedMap:(Transform)block {
@@ -127,6 +131,34 @@
         } else {
             [result addObject:block(object)];
         }
+    }
+    return result;
+}
+
+- (NSArray *) multiMap:(NSArray *)blocks {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        [result addObject: [object applyAll:blocks]];
+    }
+    return result;
+}
+
+- (NSArray *) generators:(Transform)block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        [result addObject: ^{
+            return block(object);
+        }];
+    }
+    return result;
+}
+
+- (NSArray *) transforms:(Operation)block {
+    NSMutableArray *result = [NSMutableArray array];
+    for (id object in self) {
+        [result addObject: ^(id value){
+            return block(object, value);
+        }];
     }
     return result;
 }
@@ -202,7 +234,7 @@
     return [self sortedArrayUsingComparator:block];
 }
 
-- (NSArray *) sortBy:(NSUInteger(^)(id object))block {
+- (NSArray *) sortBy:(NSUInteger(^)(id))block {
     return [self sort:^(id a, id b) {
       return [[NSNumber numberWithLong:block(a)] compare:
               [NSNumber numberWithLong:block(b)]];
@@ -285,6 +317,14 @@
     NSMutableArray *result = [NSMutableArray array];
     for (id(^block)(id) in blocks) {
         [result addObject:block(self)];
+    }
+    return result;
+}
+
+- (NSArray *) copies:(NSUInteger)count {
+    NSMutableArray *result = [NSMutableArray array];
+    for (NSUInteger i = 0; i < count; i++) {
+        [result addObject:self];
     }
     return result;
 }

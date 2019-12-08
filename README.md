@@ -4,11 +4,14 @@ An Objective-C category that adds functional programming methods to NSArray.
 
 ## Contents
 
+- [Blocks](#blocks)
 - [Times](#times)
 - [Generate](#generate)
 - [Numbers in Range](#numbers-in-range)
 - [Apply](#apply)
 - [Apply All](#apply-all)
+- [Copies](#copies)
+- [Copies Of](#copies-of)
 - [Each](#each)
 - [Every](#every)
 - [Any](#any)
@@ -18,6 +21,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Indexed Map](#indexed-map)
 - [Matrix Map](#matrix-map)
 - [Square Map](#square-map)
+- [Child Map](#child-map)
 - [Nested Map](#nested-map)
 - [Multi Map](#multi-map)
 - [Replace](#replace)
@@ -39,6 +43,26 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Concat](#concat)
 - [Four Fours](#four-fours)
 
+## Blocks
+
+The following type definitions make working with block types easier. 
+
+`typedef BOOL(^Test)(id);`
+
+A block that takes an object, performs a test and returns a boolean.
+
+`typedef id(^Generator)(void);`
+
+A block that takes no arguments, generates an object and returns it.
+
+`typedef id(^Transform)(id);`
+
+A block that takes an object, transforms it in some way and returns another object.
+
+`typedef id(^Operation)(id, id);`
+
+A block that takes two objects, performs and operation on them and returns the result.
+
 ## Times
 
 `- (NSArray *) times:(id(^)(void))block;`
@@ -46,7 +70,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 Returns a new array by calling the block a given number of times and returning the results.
 
 ```
-NSArray *randomNumbers = [@10 times:^id{
+NSArray *randomNumbers = [@10 times:^{
     return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
 }];
 ```
@@ -59,7 +83,7 @@ NSArray *randomNumbers = [@10 times:^id{
 Returns a new array by calling the block a given number of times and returning the results.
 
 ```
-NSArray *randomNumbers = [NSArray generate:^id{
+NSArray *randomNumbers = [NSArray generate:^{
     return [NSNumber numberWithInt: arc4random_uniform(100) + 1];
 } count:10];
 ```
@@ -98,9 +122,31 @@ Calls the blocks on the object and returns the results.
 ```
 [0.4, 2, 4, 24]
 
+## Copies
+
+`- (NSArray *) copies:(NSUInteger)count;`
+
+Returns an array with the recipient a given number of times.
+
+```
+[@"Yeah!" copies:3]
+```
+[Yeah!, Yeah!, Yeah!]
+
+## Copies Of
+
+`- (NSArray *) copiesOf:(id)value;`
+
+Returns an array with the same object a given number of times.
+
+```
+[@3 copiesOf: @"Yeah!"]
+```
+[Yeah!, Yeah!, Yeah!]
+
 ## Each
 
-`- (void) each:(void(^)(id object))block;`
+`- (void) each:(void(^)(id))block;`
 
 Performs the block on each object in the array.
 
@@ -119,7 +165,7 @@ purple
 
 ## Every
 
-`- (BOOL) every:(BOOL(^)(id object))block;`
+`- (BOOL) every:(Test)block;`
 
 Returns true if the block returns true for every object in the array.
 
@@ -132,7 +178,7 @@ YES
 
 ## Any
 
-`- (BOOL) any:(BOOL(^)(id object))block;`
+`- (BOOL) any:(Test)block;`
 
 Returns true if the block returns true for any object in the array.
 
@@ -156,7 +202,7 @@ YES
 
 ## Find
 
-`- (id) find:(BOOL(^)(id object))block;`
+`- (id) find:(Test)block;`
 
 Returns the first object in the array for which the block returns true.
 
@@ -169,12 +215,12 @@ blue
 
 ## Map
 
-`- (NSArray *) map:(id(^)(id object))block;`
+`- (NSArray *) map:(Transform)block;`
 
 Calls the block on every object in the array and returns an array of the results.
 
 ```
-[colors map:^id(id value) {
+[colors map:^(id value) {
     return [NSNumber numberWithLong: [value length]];
 }]
 ```
@@ -182,12 +228,12 @@ Calls the block on every object in the array and returns an array of the results
 
 ## Indexed Map
 
-`- (NSArray *) indexedMap:(id(^)(NSUInteger index, id object))block;`
+`- (NSArray *) indexedMap:(id(^)(NSUInteger, id))block;`
 
 Calls the block on every object in the array along with the index and returns an array of the results.
 
 ```
-[colors indexedMap:^id(NSUInteger i, id value) {
+[colors indexedMap:^(NSUInteger i, id value) {
     return [NSString stringWithFormat: @"%lu %@", i, value];
 }]
 ```
@@ -195,12 +241,12 @@ Calls the block on every object in the array along with the index and returns an
 
 ## Matrix Map
 
-`- (NSArray *) matrixMap:(id(^)(id object1, id object2))block objects:(NSArray *)objects;`
+`- (NSArray *) matrixMap:(Operation)block objects:(NSArray *)objects;`
 
 Creates a marrix that is the result of calling the block on every combination of objects from this and the other array.
 
 ```
-[numbers matrixMap:^id(id number, id color) {
+[numbers matrixMap:^(id number, id color) {
     return [NSString stringWithFormat: @"%@ %@", number, color];
 } objects:colors]
 ```
@@ -217,12 +263,12 @@ Creates a marrix that is the result of calling the block on every combination of
 
 ## Square Map
 
-`- (NSArray *) squareMap:(id(^)(id object1, id object2))block;`
+`- (NSArray *) squareMap:(Operation)block;`
 
 Returns a matrix that is the result of calling the block with every combination of two objects from the array. Equivalent to passing self to `matrix:objects:`.
 
 ```
-NSArray *multiplicationTable = [numbers squareMap:^id(id object1, id object2) {
+NSArray *multiplicationTable = [numbers squareMap:^(id object1, id object2) {
     return [NSNumber numberWithInt: [object1 intValue] * [object2 intValue]];
 }]
 ```
@@ -237,14 +283,14 @@ NSArray *multiplicationTable = [numbers squareMap:^id(id object1, id object2) {
 [9, 18, 27, 36, 45, 54, 63, 72, 81, 90]  
 [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-## Nested Map
+## Child Map
 
-`- (NSArray *) nestedMap:(id(^)(id object))block;`
+`- (NSArray *) childMap:(Transform)block;`
 
-Given a nested array, returns a nested array of the results of calling the block on each item.
+Given an array of arrays, returns the result of mapping the block on every array in the array.
 
 ```
-[multiplicationTable nestedMap:twice]
+[multiplicationTable childMap:twice]
 ```
 [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]  
 [4, 8, 12, 16, 20, 24, 28, 32, 36, 40]  
@@ -257,6 +303,17 @@ Given a nested array, returns a nested array of the results of calling the block
 [18, 36, 54, 72, 90, 108, 126, 144, 162, 180]  
 [20, 40, 60, 80, 100, 120, 140, 160, 180, 200]
 
+## Nested Map
+
+`- (NSArray *) nestedMap:(Transform)block;`
+
+Given a deeply nested array, returns a nested array of the results of calling the block on each item.
+
+```
+NSArray *nested = @[@[@1, @2], @[@3, @[@4, @[@5, @[@6]]]]];
+[nested nestedMap:square]
+```
+[[1, 4], [9, [16, [25, [36]]]]]
 
 ## Multi Map
 
@@ -277,6 +334,55 @@ Given an array of blocks, returns an array of arrays generated by calling all of
 [8, 64, 2.82842712474619]  
 [9, 81, 3]  
 [10, 100, 3.16227766016838]
+
+## Generators
+
+`- (NSArray *) generators:(Transform)block;`
+
+Returns an array of generator blocks that close over each value in the array and pass it to the transform block.
+
+```
+NSArray *greeters = [numbers generators:^(id number) {
+    return [number copiesOf: @"hi"];
+}];
+for (Generator greeter in greeters) {
+    NSLog(@"%@", [greeter() join]);
+}
+```
+hi  
+hi, hi  
+hi, hi, hi  
+hi, hi, hi, hi  
+hi, hi, hi, hi, hi  
+hi, hi, hi, hi, hi, hi  
+hi, hi, hi, hi, hi, hi, hi  
+hi, hi, hi, hi, hi, hi, hi, hi  
+hi, hi, hi, hi, hi, hi, hi, hi, hi  
+hi, hi, hi, hi, hi, hi, hi, hi, hi, hi
+
+## Transforms
+
+`- (NSArray *) transforms:(Operation)block;`
+
+Returns an array of transform blocks that close over each value in the array and pass it to the operation block as the first value.
+
+```
+[@3 applyAll: [numbers transforms:product]]
+```
+[3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+
+```
+NSArray *repeaters = [[numbers limit:3] transforms:^(id number, id value) {
+    return [number copiesOf: value];
+}];
+[colors multiMap:repeaters]
+```
+[[red], [red, red], [red, red, red]]  
+[[orange], [orange, orange], [orange, orange, orange]]  
+[[yellow], [yellow, yellow], [yellow, yellow, yellow]]  
+[[green], [green, green], [green, green, green]]  
+[[blue], [blue, blue], [blue, blue, blue]]  
+[[purple], [purple, purple], [purple, purple, purple]]
 
 ## Replace
 
@@ -299,7 +405,7 @@ NSDictionary *frenchColors = @{
 
 ## Filter
 
-`- (NSArray *) filter:(BOOL(^)(id object))block;`
+`- (NSArray *) filter:(Test)block;`
 
 Returns an array consisting of all the objects in the array for which the block returns true.
 
@@ -319,7 +425,7 @@ Returns an array consisting of all the objects in the array for which the block 
 
 ## Remove
 
-`- (NSArray *) remove:(BOOL(^)(id object))block;`
+`- (NSArray *) remove:(Test)block;`
 
 Returns an array consisting of all the objects in the array for which the block returns false.
 
@@ -367,8 +473,8 @@ Returns just the objects that are not in the other array.
 Reduces the array using a block. Each time the block is called, it is passed the accumulator value and one object from the array, and returns a new accumulator value. The function takes an initial value and returns the final accumulator value. If the initial value is nil, uses the first value as the initial value.
 
 ```
-[colors reduce:^id(id acc, id value) {
-    return [value length] <= [acc length] ? value : acc;
+[colors reduce:^(id acc, id object) {
+    return [object length] <= [acc length] ? object : acc;
 }]
 ```
 red
@@ -406,7 +512,7 @@ Returns an array sorted using the comparator block. Alias for `sortedArrayUsingC
 Returns an array sorted by calling the block on each object and comparing the resulting integers.
 
 ```
-[colors sortBy:^NSUInteger(id value) {
+[colors sortBy:^(id value) {
   return [value length];
 }]
 ```
