@@ -74,8 +74,8 @@ void fourFours() {
     NSArray *fours1 = [[@[@4.0] multiMap: unaryOps] flatten];
     NSArray *fours2 = combineFours(fours1, fours1);
     NSArray *fours3 = combineFours(fours1, fours2);
-    NSArray *fours4 = [combineFours(fours1, fours3)
-                concat:combineFours(fours2, fours2)];
+    NSArray *fours4 = [combineFours(fours1, fours3) concat:
+                       combineFours(fours2, fours2)];
     NSLog(@"One four: %@", [fours1 join]);
     NSLog(@"Two fours: %@", [fours2 join]);
     NSLog(@"Found: %@", [[target filterObjectsIn:fours4] join]);
@@ -138,6 +138,13 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Indexed colors: %@", [[colors indexedMap:^id(NSUInteger i, id value) {
             return [NSString stringWithFormat: @"%lu %@", i, value];
         }] join]);
+
+        NSLog(@"\nMatrix Map");
+
+        NSLog(@"All number color combinations:\n%@",
+            [[[numbers matrixMap:^id(id number, id color) {
+                return [NSString stringWithFormat: @"%@ %@", number, color];
+            } objects:colors] map:join] join: @"\n"]);
 
         NSLog(@"\nSquare Map");
 

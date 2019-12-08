@@ -290,7 +290,7 @@ Returns just the objects that are not in the other array.
 
 ## Reduce
 
-`- (id) reduce:(id(^)(id acc, id object))block;`
+`- (id) reduce:(id(^)(id acc, id object))block;`  
 `- (id) reduce:(id(^)(id acc, id object))block initial:(id)initial;`
 
 Reduces the array using a block. Each time the block is called, it is passed the accumulator value and one object from the array, and returns a new accumulator value. The function takes an initial value and returns the final accumulator value. If the initial value is nil, uses the first value as the initial value.
@@ -485,8 +485,8 @@ void fourFours() {
     NSArray *fours1 = [[@[@4.0] multiMap: unaryOps] flatten];
     NSArray *fours2 = combineFours(fours1, fours1);
     NSArray *fours3 = combineFours(fours1, fours2);
-    NSArray *fours4 = [combineFours(fours1, fours3)
-                concat:combineFours(fours2, fours2)];
+    NSArray *fours4 = [combineFours(fours1, fours3) concat:
+                       combineFours(fours2, fours2)];
     NSLog(@"One four: %@", fours1);
     NSLog(@"Two fours: %@", fours2);
     NSLog(@"Found: %@", [target filterObjectsIn:fours4]);
