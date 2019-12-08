@@ -55,7 +55,8 @@ Returns true if the block returns true for every object in the array.
 ```
 [colors every:^BOOL(id value) {
     return [value contains:@"e"];
-}]```
+}]
+```
 YES
 
 ## Any
@@ -67,7 +68,8 @@ Returns true if the block returns true for any object in the array.
 ```
 [colors any:^BOOL(id value) {
     return [value length] > 6;
-}]```
+}]
+```
 NO
 
 ## Contains Objects
@@ -116,7 +118,8 @@ Calls the block on every object in the array along with the index and returns an
 ```
 [colors indexedMap:^id(NSUInteger i, id value) {
     return [NSString stringWithFormat: @"%lu %@", i, value];
-}]```
+}]
+```
 [0 red, 1 orange, 2 yellow, 3 green, 4 blue, 5 purple]
 
 ## Matrix Map
@@ -283,7 +286,8 @@ Reduces the array using a block. Each time the block is called, it is passed the
 ```
 [colors reduce:^id(id acc, id value) {
     return [value length] <= [acc length] ? value : acc;
-}]```
+}]
+```
 red
 
 ```
