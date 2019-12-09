@@ -198,7 +198,7 @@ Returns true if the block returns true for every object in the array.
 
 ```
 [colors every:^BOOL(id value) {
-    return [value contains:@"e"];
+    return [value contains: @"e"];
 }]
 ```
 YES
@@ -223,7 +223,7 @@ NO
 Returns true if the array contains all of the objects.
 
 ```
-[colors containsObjects:@[@"blue", @"purple"]]
+[colors containsObjects: @[@"blue", @"purple"]]
 ```
 YES
 
@@ -270,7 +270,7 @@ Calls the block on every object in the array along with the index and returns an
 
 `- (NSArray *) matrixMap:(Operation)block objects:(NSArray *)objects;`
 
-Creates a marrix that is the result of calling the block on every combination of objects from this and the other array.
+Creates a matrix that is the result of calling the block on every combination of objects from this and the other array.
 
 ```
 [numbers matrixMap:^(id number, id color) {
@@ -295,9 +295,7 @@ Creates a marrix that is the result of calling the block on every combination of
 Returns a matrix that is the result of calling the block with every combination of two objects from the array. Equivalent to passing self to `matrix:objects:`.
 
 ```
-NSArray *multiplicationTable = [numbers squareMap:^(id object1, id object2) {
-    return [NSNumber numberWithInt: [object1 intValue] * [object2 intValue]];
-}]
+NSArray *multiplicationTable = [numbers squareMap:product];
 ```
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]  
 [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]  
@@ -456,7 +454,7 @@ Returns an array consisting of all the objects in the array for which the block 
 
 ```
 [colors remove:^BOOL(id value) {
-  return [value hasPrefix:@"g"];
+  return [value hasPrefix: @"g"];
 }]
 ```
 [red, orange, yellow, blue, purple]
@@ -604,7 +602,7 @@ Joins the items in the array using commas, in square brackets.
 Joins the items in the array using the separator. Alias for `componentsJoinedByString:`.
 
 ```
-[colors join:" - "]
+[colors join: @" - "]
 ```
 red - orange - yellow - green - blue - purple
 
