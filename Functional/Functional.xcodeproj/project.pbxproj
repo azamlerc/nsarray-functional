@@ -48,10 +48,10 @@
 			isa = PBXGroup;
 			children = (
 				4951D456239C241100ADAB1F /* main.m */,
-				4951D462239C647200ADAB1F /* Tuple.h */,
-				4951D463239C650500ADAB1F /* Tuple.m */,
 				4951D45D239C245200ADAB1F /* NSArray+Functional.h */,
 				4951D45E239C245200ADAB1F /* NSArray+Functional.m */,
+				4951D462239C647200ADAB1F /* Tuple.h */,
+				4951D463239C650500ADAB1F /* Tuple.m */,
 				4951D454239C241100ADAB1F /* Products */,
 			);
 			sourceTree = "<group>";

@@ -55,10 +55,9 @@ typedef BOOL(^Test)(id);
 // with the index and returns an array of the results.
 - (NSArray *) indexedMap:(id(^)(NSUInteger, id))block;
 
-// Creates a marrix that is the result of calling the block
+// Creates a matrix that is the result of calling the block
 // on every combination of objects from this and the other array.
-- (NSArray *) matrixMap:(Operation)block
-                objects:(NSArray *)objects;
+- (NSArray *) matrix:(NSArray *)objects map:(Operation)block;
 
 // Returns a matrix that is the result of calling the block
 // with every combination of two objects from the array.
@@ -184,6 +183,27 @@ typedef BOOL(^Test)(id);
 
 - (BOOL) contains: (NSString *) string;
 
+- (NSString *) ish: (NSString *) color;
+
 @end
 
+// Given a selector that takes no arguments, returns a transform block
+// that will call the selector on an object and return the result.
+Transform transformFromSelector(SEL selector);
+
+// Given a selector that takes one argument, returns an operation block
+// that will call the selector on the first object with the second object
+// and return the result.
+Operation operationFromSelector(SEL selector);
+
+// Given a NULL-terminated C array of selectors that take no arguments,
+// returns an array of transform blocks that will call
+// the selector on an object and return the result.
+NSArray *transformsFromSelectors(SEL selectors[]);
+
+// Given a NULL-terminated C array of selectors that take one argument,
+// returns an array of operation blocks that will call
+// the selector on the first object with the second object
+// and return the result.
+NSArray *operationsFromSelectors(SEL selectors[]);
 

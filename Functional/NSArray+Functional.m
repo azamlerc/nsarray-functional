@@ -98,8 +98,7 @@
     return result;
 }
 
-- (NSArray *) matrixMap:(Operation)block
-                objects:(NSArray *)objects {
+- (NSArray *) matrix:(NSArray *)objects map:(Operation)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object1 in self) {
         NSMutableArray *line = [NSMutableArray array];
@@ -112,7 +111,7 @@
 }
 
 - (NSArray *) squareMap:(Operation)block {
-    return [self matrixMap:block objects:self];
+    return [self matrix:self map:block];
 }
 
 - (NSArray *) childMap:(Transform)block {
@@ -361,4 +360,46 @@
     return [self rangeOfString: string].location != NSNotFound;
 }
 
+- (NSString *) ish: (NSString *) color {
+    return [self isEqual: color] ? self : [NSString stringWithFormat: @"%@ish-%@", self, color];
+}
+
 @end
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
+Transform transformFromSelector(SEL selector) {
+    return ^(id target) {
+        return [target performSelector:selector];
+    };
+}
+
+Operation operationFromSelector(SEL selector) {
+    return ^(id target, id argument) {
+        return [target performSelector:selector withObject:argument];
+    };
+}
+
+#pragma clang diagnostic pop
+
+NSArray *transformsFromSelectors(SEL selectors[]) {
+    NSMutableArray *result = [NSMutableArray array];
+    int i = 0;
+    SEL selector;
+    while ((selector = selectors[i++])) {
+        [result addObject: transformFromSelector(selector)];
+    }
+    return result;
+}
+
+NSArray *operationsFromSelectors(SEL selectors[]) {
+    NSMutableArray *result = [NSMutableArray array];
+    int i = 0;
+    SEL selector;
+    while ((selector = selectors[i++])) {
+        [result addObject: operationFromSelector(selector)];
+    }
+    return result;
+}
+

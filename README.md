@@ -268,14 +268,14 @@ Calls the block on every object in the array along with the index and returns an
 
 ## Matrix Map
 
-`- (NSArray *) matrixMap:(Operation)block objects:(NSArray *)objects;`
+`- (NSArray *) matrix:(NSArray *)objects map:(Operation)block;`
 
 Creates a matrix that is the result of calling the block on every combination of objects from this and the other array.
 
 ```
-[numbers matrixMap:^(id number, id color) {
+[numbers matrix:colors map:^(id number, id color) {
     return [NSString stringWithFormat: @"%@ %@", number, color];
-} objects:colors]
+}]
 ```
 [1 red, 1 orange, 1 yellow, 1 green, 1 blue, 1 purple]  
 [2 red, 2 orange, 2 yellow, 2 green, 2 blue, 2 purple]  
@@ -292,7 +292,7 @@ Creates a matrix that is the result of calling the block on every combination of
 
 `- (NSArray *) squareMap:(Operation)block;`
 
-Returns a matrix that is the result of calling the block with every combination of two objects from the array. Equivalent to passing self to `matrix:objects:`.
+Returns a matrix that is the result of calling the block with every combination of two objects from the array. Equivalent to passing self to `matrix:map:`.
 
 ```
 NSArray *multiplicationTable = [numbers squareMap:product];
@@ -686,7 +686,7 @@ Using functional programming, we can reduce the main function of the program to 
 
 ```
 NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
-    return [[[[[[[foursA matrixMap:[Tuple make] objects:foursB]
+    return [[[[[[[foursA matrix:foursB map:[Tuple make]]
                  nestedMap:[Tuple bothWays]]
                 flatten]
                mapAll: @[add, subtract, multiply, divide]]
@@ -707,4 +707,57 @@ void fourFours() {
 }
 ```
 Found: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 78, 79, 80, 82, 83, 84, 85, 86, 88, 89, 90, 91, 92, 94, 95, 96, 97, 98, 100  
-Missing: 73, 77, 81, 87, 93, 99  
+Missing: 73, 77, 81, 87, 93, 99
+
+## Selectors
+
+Selectors describe the name of a method, but cannot be passed as blocks. These functions transform seletors into blocks that are compatible with functional programming. 
+
+`Transform transformFromSelector(SEL selector);`
+
+Given a selector that takes no arguments, returns a transform block that will call the selector on an object and return the result.
+
+`NSArray *transformsFromSelectors(SEL selectors[]);`
+
+Given a NULL-terminated C array of selectors that take no arguments, returns an array of transform blocks that will call the selector on an object and return the result.
+
+`Operation operationFromSelector(SEL selector);`
+
+Given a selector that takes one argument, returns an operation block that will call the selector on the first object with the second object and return the result.
+
+`NSArray *operationsFromSelectors(SEL selectors[]);`
+
+Given a NULL-terminated C array of selectors that take one argument, returns an array of operation blocks that will call the selector on the first object with the second object and return the result.
+
+```
+SEL caseSelectors[] = {
+    @selector(lowercaseString),
+    @selector(capitalizedString),
+    @selector(uppercaseString),
+    NULL
+};
+[colors mapAll:transformsFromSelectors(caseSelectors)]
+```
+[red, Red, RED]  
+[orange, Orange, ORANGE]  
+[yellow, Yellow, YELLOW]  
+[green, Green, GREEN]  
+[blue, Blue, BLUE]  
+[purple, Purple, PURPLE]
+
+```
+- (NSString *) ish: (NSString *) color {
+    return [self isEqual: color] ? self : [NSString stringWithFormat: @"%@ish-%@", self, color];
+}
+
+[colors matrix:colors map:operationFromSelector(@selector(ish:))]
+```
+[red, redish-orange, redish-yellow, redish-green, redish-blue, redish-purple]  
+[orangeish-red, orange, orangeish-yellow, orangeish-green, orangeish-blue, orangeish-purple]  
+[yellowish-red, yellowish-orange, yellow, yellowish-green, yellowish-blue, yellowish-purple]  
+[greenish-red, greenish-orange, greenish-yellow, green, greenish-blue, greenish-purple]  
+[blueish-red, blueish-orange, blueish-yellow, blueish-green, blue, blueish-purple]  
+[purpleish-red, purpleish-orange, purpleish-yellow, purpleish-green, purpleish-blue, purple]  
+
+
+

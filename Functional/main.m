@@ -64,7 +64,7 @@ Transform join = ^(id array) {
 };
 
 NSArray *combineFours(NSArray *foursA, NSArray *foursB) {
-    return [[[[[[[foursA matrixMap:[Tuple make] objects:foursB]
+    return [[[[[[[foursA matrix:foursB map:[Tuple make]]
                  nestedMap:[Tuple bothWays]]
                 flatten]
                mapAll: @[add, subtract, multiply, divide]]
@@ -153,9 +153,9 @@ int main(int argc, const char * argv[]) {
         NSLog(@"\nMatrix Map");
 
         NSLog(@"All number color combinations:\n%@",
-            [[[numbers matrixMap:^(id number, id color) {
+            [[[numbers matrix:colors map:^(id number, id color) {
                 return [NSString stringWithFormat: @"%@ %@", number, color];
-            } objects:colors] map:join] join: @"\n"]);
+            }] map:join] join: @"\n"]);
 
         NSLog(@"\nSquare Map");
 
@@ -295,6 +295,18 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nFour Fours");
         fourFours();
+        
+        NSLog(@"\nSelectors");
+        SEL caseSelectors[] = {
+            @selector(lowercaseString),
+            @selector(capitalizedString),
+            @selector(uppercaseString),
+            NULL
+        };
+        NSLog(@"Cases:\n%@", [[[colors mapAll:transformsFromSelectors(caseSelectors)] map:join] join:@"\n"]);
+        
+        NSLog(@"Color combinations:\n%@", [[[colors matrix:colors map:operationFromSelector(@selector(ish:))] map:join] join:@"\n"]);
+        
     }
     return 0;
 }
