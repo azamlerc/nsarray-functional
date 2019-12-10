@@ -20,6 +20,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Find](#find): find an object in the array
 - [Map](#map): transform each object in the array
 - [Indexed Map](#indexed-map): transform each object with index
+- [Zip Map](#zip-map): call a block on objects from two arrays
 - [Matrix Map](#matrix-map): create a matrix using another array
 - [Square Map](#square-map): transform all combinations of two values
 - [Child Map](#child-map): transform all children in a 2D array
@@ -266,6 +267,19 @@ Calls the block on every object in the array along with the index and returns an
 }]
 ```
 [0 red, 1 orange, 2 yellow, 3 green, 4 blue, 5 purple]
+
+## Zip Map
+
+`- (NSArray *) zip:(NSArray *)objects map:(Operation)block;`
+
+Given another array of the same length, iterates over both arrays and calls the block on one object from each array.
+
+```
+[numbers zip:colors map:^(id number, id color) {
+    return [NSString stringWithFormat: @"%@ %@", number, color];
+}]
+```
+[1 red, 2 orange, 3 yellow, 4 green, 5 blue, 6 purple]  
 
 ## Matrix Map
 
@@ -712,7 +726,7 @@ Missing: 73, 77, 81, 87, 93, 99
 
 ## Selectors
 
-Selectors describe the name of a method, but cannot be passed as blocks. These functions transform seletors into blocks that are compatible with functional programming. 
+Selectors describe the name of a method, but cannot be used like blocks. These functions transform selectors into blocks that are compatible with functional programming. 
 
 `Transform transformFromSelector(SEL selector);`
 
@@ -751,7 +765,7 @@ SEL caseSelectors[] = {
     return [self isEqual: color] ? self : [NSString stringWithFormat: @"%@ish-%@", self, color];
 }
 
-[colors matrix:colors map:operationFromSelector(@selector(ish:))]
+[colors squareMap:operationFromSelector(@selector(ish:))]
 ```
 [red, redish-orange, redish-yellow, redish-green, redish-blue, redish-purple]  
 [orangeish-red, orange, orangeish-yellow, orangeish-green, orangeish-blue, orangeish-purple]  

@@ -98,6 +98,17 @@
     return result;
 }
 
+- (NSArray *) zip:(NSArray *)objects map:(Operation)block {
+    NSMutableArray *result = [NSMutableArray array];
+    NSUInteger selfCount = [self count];
+    NSUInteger objectsCount = [objects count];
+    
+    for (NSUInteger i = 0; i < selfCount && i < objectsCount; i++) {
+        [result addObject: block([self objectAtIndex:i], [objects objectAtIndex:i])];
+    }
+    return result;
+}
+
 - (NSArray *) matrix:(NSArray *)objects map:(Operation)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object1 in self) {

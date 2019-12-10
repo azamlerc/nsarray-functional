@@ -150,6 +150,13 @@ int main(int argc, const char * argv[]) {
             return [NSString stringWithFormat: @"%lu %@", i, value];
         }] join]);
 
+        NSLog(@"\nZip Map");
+
+        NSLog(@"Numbers and colors: %@",
+            [[numbers zip:colors map:^(id number, id color) {
+                return [NSString stringWithFormat: @"%@ %@", number, color];
+            }] join]);
+             
         NSLog(@"\nMatrix Map");
 
         NSLog(@"All number color combinations:\n%@",
@@ -305,7 +312,7 @@ int main(int argc, const char * argv[]) {
         };
         NSLog(@"Cases:\n%@", [[[colors mapAll:transformsFromSelectors(caseSelectors)] map:join] join:@"\n"]);
         
-        NSLog(@"Color combinations:\n%@", [[[colors matrix:colors map:operationFromSelector(@selector(ish:))] map:join] join:@"\n"]);
+        NSLog(@"\nColor combinations:\n%@", [[[colors squareMap:operationFromSelector(@selector(ish:))] map:join] join:@"\n"]);
         
     }
     return 0;

@@ -55,6 +55,10 @@ typedef BOOL(^Test)(id);
 // with the index and returns an array of the results.
 - (NSArray *) indexedMap:(id(^)(NSUInteger, id))block;
 
+// Given another array of the same length, iterates over both arrays
+// and calls the block on one object from each array.
+- (NSArray *) zip:(NSArray *)objects map:(Operation)block;
+
 // Creates a matrix that is the result of calling the block
 // on every combination of objects from this and the other array.
 - (NSArray *) matrix:(NSArray *)objects map:(Operation)block;
