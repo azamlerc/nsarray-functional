@@ -44,6 +44,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Flatten](#flatten): nested array to flat array
 - [Concat](#concat): concatenate two arrays
 - [Four Fours](#four-fours): put it all together!
+- [Selectors](#selectors): converts selectors to blocks
 
 ## Blocks
 
