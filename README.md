@@ -276,10 +276,15 @@ Given another array of the same length, iterates over both arrays and calls the 
 
 ```
 [numbers zip:colors map:^(id number, id color) {
-    return [NSString stringWithFormat: @"%@ %@", number, color];
+    return [number copiesOf:color];
 }]
 ```
-[1 red, 2 orange, 3 yellow, 4 green, 5 blue, 6 purple]  
+[red]  
+[orange, orange]  
+[yellow, yellow, yellow]  
+[green, green, green, green]  
+[blue, blue, blue, blue, blue]  
+[purple, purple, purple, purple, purple, purple]
 
 ## Matrix Map
 

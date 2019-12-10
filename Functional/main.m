@@ -152,10 +152,10 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nZip Map");
 
-        NSLog(@"Numbers and colors: %@",
-            [[numbers zip:colors map:^(id number, id color) {
-                return [NSString stringWithFormat: @"%@ %@", number, color];
-            }] join]);
+        NSLog(@"Colors repeated:\n%@",
+            [[[numbers zip:colors map:^(id number, id color) {
+                return [number copiesOf:color];
+            }] map:join] join: @"\n"]);
              
         NSLog(@"\nMatrix Map");
 
