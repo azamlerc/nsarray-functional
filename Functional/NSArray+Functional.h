@@ -176,6 +176,10 @@ typedef BOOL(^Test)(id);
 // Calls the blocks on the object and returns the results.
 - (NSArray *) applyAll:(NSArray *)blocks;
 
+// Calls each of the blocks on the object, passing
+// the result of each call as the input to the next.
+- (id) applyTransforms:(NSArray *)blocks;
+
 // Returns an array with the same object a given number of times.
 - (NSArray *) copies:(NSUInteger)count;
 
@@ -211,3 +215,6 @@ NSArray *transformsFromSelectors(SEL selectors[]);
 // and return the result.
 NSArray *operationsFromSelectors(SEL selectors[]);
 
+// Performs the first block in the background, and then calls the second
+// block in the foreground with the return value of the first block.
+void background(id(^block)(void), void(^completion)(id));

@@ -345,8 +345,16 @@
 
 - (NSArray *) applyAll:(NSArray *)blocks {
     NSMutableArray *result = [NSMutableArray array];
-    for (id(^block)(id) in blocks) {
+    for (Transform block in blocks) {
         [result addObject:block(self)];
+    }
+    return result;
+}
+
+- (id) applyTransforms:(NSArray *)blocks {
+    id result = self;
+    for (Transform block in blocks) {
+        result = block(result);
     }
     return result;
 }
@@ -414,3 +422,11 @@ NSArray *operationsFromSelectors(SEL selectors[]) {
     return result;
 }
 
+void background(id(^block)(void), void(^completion)(id)) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        id result = block();
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(result);
+        });
+    });
+}

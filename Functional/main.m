@@ -33,7 +33,7 @@ Transform twice = ^(NSNumber *value) {
     return [NSNumber numberWithInt: [value intValue] * 2];
 };
 Transform square = ^(NSNumber *value) {
-    return [NSNumber numberWithInt: [value intValue] * [value intValue]];
+    return [NSNumber numberWithDouble: [value doubleValue] * [value doubleValue]];
 };
 Transform squareRoot = ^(NSNumber *value) {
     return [NSNumber numberWithDouble: sqrt([value doubleValue])];
@@ -105,6 +105,10 @@ int main(int argc, const char * argv[]) {
         NSLog(@"\nApply All");
         
         NSLog(@"1 Four: %@", [[@4.0 applyAll: @[decimalPoint, squareRoot, identity, factorial]] join]);
+                           
+        NSLog(@"\nApply Transforsm");
+        
+        NSLog(@"2^32: %@", [@2.0 applyTransforms: @[square, square, square, square, square]]);
                            
         NSLog(@"\nCopies");
         
@@ -313,6 +317,12 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Cases:\n%@", [[[colors mapAll:transformsFromSelectors(caseSelectors)] map:join] join:@"\n"]);
         
         NSLog(@"\nColor combinations:\n%@", [[[colors squareMap:operationFromSelector(@selector(ish:))] map:join] join:@"\n"]);
+        
+        background(^{
+            return @"It worked!";
+        }, ^(id result){
+            NSLog(@"Result: %@", result);
+        });
         
     }
     return 0;

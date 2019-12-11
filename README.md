@@ -128,6 +128,19 @@ Calls the blocks on the object and returns the results.
 ```
 [0.4, 2, 4, 24]
 
+## Apply Transforms
+
+*NSObject*
+
+`- (id) applyTransforms:(NSArray *)blocks;`
+
+Calls each of the blocks on the object, passing the result of each call as the input to the next.
+
+```
+[@2.0 applyTransforms: @[square, square, square, square, square]
+```
+4294967296
+
 ## Call All
 
 `- (NSArray *) callAll;`
@@ -779,5 +792,19 @@ SEL caseSelectors[] = {
 [blueish-red, blueish-orange, blueish-yellow, blueish-green, blue, blueish-purple]  
 [purpleish-red, purpleish-orange, purpleish-yellow, purpleish-green, purpleish-blue, purple]  
 
+
+## Background
+
+`void background(id(^block)(void), void(^completion)(id));`
+
+Performs the first block in the background, and then calls the second block in the foreground with the return value of the first block.
+
+```
+background(^{
+    return @"It worked!";
+}, ^(id result){
+    NSLog(@"Result: %@", result);
+});
+```
 
 
