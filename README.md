@@ -46,6 +46,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Concat](#concat): concatenate two arrays
 - [Four Fours](#four-fours): put it all together!
 - [Selectors](#selectors): converts selectors to blocks
+- [Lessons Learned](#lessons-learned)
 
 ## Blocks
 
@@ -807,4 +808,12 @@ background(^{
 });
 ```
 
+## Lessons Learned
 
+- Blocks were added in Objective-C 2.0, and relatively few functional methods are are built in. But new functionality can be added to base classes using categories. 
+- Function names are verbose, like `sortedArrayUsingComparator:`. But it’s easy to add aliases like `sort:` that call existing functions. 
+- The [block syntax](http://fuckingblocksyntax.com/) is attrocious, but typedefs can be used to make block type syntax manageable. Block return types can usually be inferred. 
+- Methods, functions and operators cannot be used interchangably with blocks. If you want the functionality of a method, function or operator, you have to wrap it in a new block.
+- Scalars cannot be added to an array, but must be wrapped in NSNumber objects. However you can’t do math with NSNumber objects, which must be unwrapped to perform calculations.
+- Blocks are closures and can close over variables in the scope where they are defined.
+- Blocks can be added to NSArrays and enumerated using for loops.
