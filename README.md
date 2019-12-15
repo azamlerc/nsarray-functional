@@ -18,6 +18,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Any](#any): check if any object passes a test
 - [Contains Objects](#contains-objects): check if an array contains some objects
 - [Find](#find): find an object in the array
+- [Replace With](#replace-with): replace objects in the array
 - [Map](#map): transform each object in the array
 - [Indexed Map](#indexed-map): transform each object with index
 - [Zip Map](#zip-map): call a block on objects from two arrays
@@ -261,6 +262,17 @@ Returns the first object in the array for which the block returns true.
 }]
 ```
 blue
+
+## Replace With
+
+`- (NSArray *) replace:(id)object with:(id)other;`
+
+Replaces all occurences of an object with another object.
+
+```
+[colors replace:@"blue" with:@"turquoise"]
+```
+[red, orange, yellow, green, turquoise, purple]
 
 ## Map
 

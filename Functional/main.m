@@ -142,6 +142,10 @@ int main(int argc, const char * argv[]) {
             return [value length] == 4;
         }]);
 
+        NSLog(@"\nReplace With");
+
+        NSLog(@"Alternate color: %@", [[colors replace:@"blue" with:@"turquoise"] join]);
+
         NSLog(@"\nMap");
 
         NSLog(@"Length of each color: %@", [[colors map:^(id value) {

@@ -81,6 +81,12 @@
     return nil;
 }
 
+- (NSArray *) replace:(id)object with:(id)other {
+    return [self map:^(id value) {
+        return [value isEqual: object] ? other : value;
+    }];
+}
+
 - (NSArray *) map:(Transform)block {
     NSMutableArray *result = [NSMutableArray array];
     for (id object in self) {

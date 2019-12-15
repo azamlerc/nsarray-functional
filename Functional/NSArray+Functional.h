@@ -47,6 +47,9 @@ typedef BOOL(^Test)(id);
 // Returns the first object in the array for which the block returns true.
 - (id) find:(Test)block;
 
+// Replaces all occurences of an object with another object.
+- (NSArray *) replace:(id)object with:(id)other;
+
 // Calls the block on every object in the array
 // and returns an array of the results.
 - (NSArray *) map:(Transform)block;
