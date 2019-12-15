@@ -18,6 +18,8 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Any](#any): check if any object passes a test
 - [Contains Objects](#contains-objects): check if an array contains some objects
 - [Find](#find): find an object in the array
+- [Replace](#replace): replace all objects using a dictionary
+- [Replace With](#replace-with): replace objects in the array
 - [Map](#map): transform each object in the array
 - [Indexed Map](#indexed-map): transform each object with index
 - [Zip Map](#zip-map): call a block on objects from two arrays
@@ -26,8 +28,6 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Child Map](#child-map): transform all children in a 2D array
 - [Nested Map](#nested-map): transform all objects in a nested array
 - [Map All](#map-all): call several blocks on each object
-- [Replace](#replace): replace all objects using a dictionary
-- [Replace With](#replace-with): replace objects in the array
 - [Filter](#filter): objects that pass a test
 - [Remove](#remove): objects that don't pass a test
 - [Filter Objects](#filter-objects): objects that are in another array
@@ -265,6 +265,36 @@ Returns the first object in the array for which the block returns true.
 ```
 blue
 
+## Replace
+
+`- (NSArray *) replace:(NSDictionary *)dict;`
+
+Returns an array by looking up each object in the dictionary and replacing it with the corresponding value.
+
+```
+NSDictionary *frenchColors = @{
+    @"red": @"rouge",
+    // orange is the same
+    @"yellow": @"jaune",
+    @"green": @"vert",
+    @"blue": @"bleu",
+    @"purple": @"violet",
+};
+[colors replace:frenchColors]
+```
+[rouge, orange, jaune, vert, bleu, violet]
+
+## Replace With
+
+`- (NSArray *) replace:(id)object with:(id)other;`
+
+Replaces all occurences of an object with another object.
+
+```
+[colors replace:@"blue" with:@"turquoise"]
+```
+[red, orange, yellow, green, turquoise, purple]
+
 ## Map
 
 `- (NSArray *) map:(Transform)block;`
@@ -449,36 +479,6 @@ NSArray *repeaters = [[numbers limit:3] transforms:^(id number, id value) {
 [[green], [green, green], [green, green, green]]  
 [[blue], [blue, blue], [blue, blue, blue]]  
 [[purple], [purple, purple], [purple, purple, purple]]
-
-## Replace
-
-`- (NSArray *) replace:(NSDictionary *)dict;`
-
-Returns an array by looking up each object in the dictionary and replacing it with the corresponding value.
-
-```
-NSDictionary *frenchColors = @{
-    @"red": @"rouge",
-    // orange is the same
-    @"yellow": @"jaune",
-    @"green": @"vert",
-    @"blue": @"bleu",
-    @"purple": @"violet",
-};
-[colors replace:frenchColors]
-```
-[rouge, orange, jaune, vert, bleu, violet]
-
-## Replace With
-
-`- (NSArray *) replace:(id)object with:(id)other;`
-
-Replaces all occurences of an object with another object.
-
-```
-[colors replace:@"blue" with:@"turquoise"]
-```
-[red, orange, yellow, green, turquoise, purple]
 
 ## Filter
 
