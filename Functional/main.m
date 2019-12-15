@@ -44,6 +44,9 @@ Transform factorial = ^(NSNumber *value) {
 Operation sum = ^(NSNumber *value1, NSNumber *value2) {
     return [NSNumber numberWithDouble: [value1 doubleValue] + [value2 doubleValue]];
 };
+Operation difference = ^(NSNumber *value1, NSNumber *value2) {
+    return [NSNumber numberWithDouble: [value1 doubleValue] - [value2 doubleValue]];
+};
 Operation product = ^(NSNumber *value1, NSNumber *value2) {
     return [NSNumber numberWithDouble: [value1 doubleValue] * [value2 doubleValue]];
 };
@@ -361,7 +364,38 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Cases:\n%@", [[[colors mapAll:transformsFromSelectors(caseSelectors)] map:join] join:@"\n"]);
         
         NSLog(@"\nColor combinations:\n%@", [[[colors squareMap:operationFromSelector(@selector(ish:))] map:join] join:@"\n"]);
-        
+
+        NSLog(@"\nMin Key");
+
+        NSDictionary *colorValues = @{
+            @"red": @[@245, @27, @55],
+            @"orange": @[@231, @119, @41],
+            @"yellow": @[@254, @232, @23],
+            @"green": @[@24, @180, @46],
+            @"blue": @[@12, @129, @245],
+            @"purple": @[@224, @41, @224],
+            @"white": @[@233, @233, @233],
+            @"black": @[@20, @20, @20]
+        };
+        NSArray *testValue = @[@255, @0, @0];
+        NSLog(@"Closest color: %@", [colorValues minKey:^(id colorValue) {
+            return [[[[colorValue zip:testValue map:difference] map:square] reduce:sum] doubleValue];
+        }]);
+
+        NSLog(@"\nMax Key");
+
+        NSDictionary *numberNames = @{
+            @"one": @1,
+            @"ten": @10,
+            @"hundred": @100,
+            @"thousand": @1000,
+            @"million": @1000000,
+            @"billion": @1000000000,
+        };
+        NSLog(@"Largest number: %@", [numberNames maxKey:^(id number) {
+            return [number doubleValue];
+        }]);
+
 //        background(^{
 //            return @"It worked!";
 //        }, ^(id result){

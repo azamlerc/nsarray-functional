@@ -420,6 +420,38 @@
 
 @end
 
+@implementation NSDictionary (Functional)
+
+- (id) minKey:(double(^)(id))block {
+    id minKey = nil;
+    double minValue = -1;
+    
+    for (id key in self) {
+        double value = block(self[key]);
+        if (minKey == nil || value < minValue) {
+            minKey = key;
+            minValue = value;
+        }
+    }
+    return minKey;
+}
+
+- (id) maxKey:(double(^)(id))block {
+    id minKey = nil;
+    double minValue = -1;
+    
+    for (id key in self) {
+        NSUInteger value = block(self[key]);
+        if (minKey == nil || value > minValue) {
+            minKey = key;
+            minValue = value;
+        }
+    }
+    return minKey;
+}
+
+@end
+
 @implementation NSObject (Functional)
 
 - (id) apply:(Transform)block {

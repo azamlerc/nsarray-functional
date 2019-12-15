@@ -51,6 +51,8 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Zip](#zip): alternating objects from two arrays
 - [Flatten](#flatten): nested array to flat array
 - [Concat](#concat): concatenate two arrays
+- [Min Key](#min-key): search dictionary for minimum value
+- [Max Key](#max-key): search dictionary for maximum value
 - [Four Fours](#four-fours): put it all together!
 - [Selectors](#selectors): converts selectors to blocks
 - [Lessons Learned](#lessons-learned)
@@ -836,6 +838,55 @@ Alias for `arrayByAddingObjectsFromArray:`.
 [colors concat:numbers]
 ```
 [red, orange, yellow, green, blue, purple, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+## Min Key
+
+*NSDictionary*
+
+`- (id) minKey:(double(^)(id))block;`
+
+Returns the key for which calling the block on the value returns the smallest number.
+
+```
+NSDictionary *colorValues = @{
+    @"red": @[@245, @27, @55],
+    @"orange": @[@231, @119, @41],
+    @"yellow": @[@254, @232, @23],
+    @"green": @[@24, @180, @46],
+    @"blue": @[@12, @129, @245],
+    @"purple": @[@224, @41, @224],
+    @"white": @[@233, @233, @233],
+    @"black": @[@20, @20, @20]
+};
+NSArray *testValue = @[@255, @0, @0];
+[colorValues minKey:^(id colorValue) {
+    return [[[[colorValue zip:testValue map:difference] map:square] reduce:sum] doubleValue];
+}]
+```
+red
+
+## Max Key
+
+*NSDictionary*
+
+`- (id) maxKey:(double(^)(id))block;`
+
+Returns the key for which calling the block on the value returns the largest number.
+
+```
+NSDictionary *numberNames = @{
+    @"one": @1,
+    @"ten": @10,
+    @"hundred": @100,
+    @"thousand": @1000,
+    @"million": @1000000,
+    @"billion": @1000000000,
+};
+[numberNames maxKey:^(id number) {
+    return [number doubleValue];
+}]
+```
+billion
 
 ## Four Fours
 

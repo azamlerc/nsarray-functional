@@ -193,6 +193,18 @@ typedef BOOL(^Test)(id);
 
 @end
 
+@interface NSDictionary (Functional)
+
+// Returns the key for which calling the block
+// on the value returns the smallest number.
+- (id) minKey:(double(^)(id))block;
+
+// Returns the key for which calling the block
+// on the value returns the largest number.
+- (id) maxKey:(double(^)(id))block;
+
+@end
+
 @interface NSObject (Functional)
 
 // Calls the block on the object and returns the result.
