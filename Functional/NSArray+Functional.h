@@ -142,6 +142,9 @@ typedef BOOL(^Test)(id);
 // The order of the results is undefined.
 - (NSArray *) unique;
 
+// Returns an array with the consecutive duplicates removed.
+- (NSArray *) dedupe;
+
 // Returns an initial slice of the array with a length up to the limit.
 - (NSArray *) limit:(int)limit;
 

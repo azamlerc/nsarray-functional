@@ -37,6 +37,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Group By](#group-by): group by performing a calculation on each object
 - [Reverse](#reverse): reverse the array
 - [Unique](#unique): remove duplicates
+- [Dedupe](#dedupe): remove consecutive duplicates
 - [Limit](#limit): just a few objects
 - [Join](#join): convert array to string
 - [Nested Join](#nested-join): convert nested array to string
@@ -632,6 +633,18 @@ NSArray *dupes = @[@1, @1, @1, @2, @2, @3];
 [dupes unique]
 ```
 [1, 2, 3]
+
+## Dedupe
+
+`- (NSArray *) dedupe;`
+
+Returns an array with the consecutive duplicates removed.
+
+```
+NSArray *dupes = @[@1, @1, @1, @2, @2, @3, @1, @2, @3];
+[dupes dedupe]
+```
+[1, 2, 3, 1, 2, 3]
 
 ## Limit
 

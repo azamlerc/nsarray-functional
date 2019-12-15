@@ -281,6 +281,18 @@
     return [[NSSet setWithArray:self] allObjects];
 }
 
+- (NSArray *) dedupe {
+    NSMutableArray *result = [NSMutableArray array];
+    id previous = nil;
+    for (id object in self) {
+        if (object != previous) {
+            [result addObject: object];
+        }
+        previous = object;
+    }
+    return result;
+}
+
 - (NSArray *) limit:(int)limit {
     return [self subarrayWithRange:NSMakeRange(0, limit)];
 }

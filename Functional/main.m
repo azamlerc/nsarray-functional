@@ -285,8 +285,12 @@ int main(int argc, const char * argv[]) {
 
         NSLog(@"\nUnique");
 
-        NSArray *dupes = @[@1, @1, @1, @2, @2, @3];
+        NSArray *dupes = @[@1, @1, @1, @2, @2, @3, @1, @2, @3];
         NSLog(@"Unique numbers: %@", [[[dupes unique] sort] join]);
+
+        NSLog(@"\nDedupe");
+
+        NSLog(@"Deduped numbers: %@", [[dupes dedupe] join]);
 
         NSLog(@"\nLimit");
 
