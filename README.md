@@ -41,6 +41,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Join](#join): convert array to string
 - [Nested Join](#nested-join): convert nested array to string
 - [Random Object](#random-object): random object from the array
+- [Random Sample](#random-sample): random objects from the array
 - [Shuffle](#shuffle): random order
 - [Zip](#zip): alternating objects from two arrays
 - [Flatten](#flatten): nested array to flat array
@@ -689,6 +690,22 @@ Returns a random object from the array.
 [colors randomObject]
 ```
 purple
+
+## Random Sample
+
+`- (NSArray *) randomSample:(double)probability;`
+
+Returns a sample of objects from the array, included with the given probability.
+
+```
+[colors randomSample:0.5]
+```
+[orange, green, blue]
+
+```
+[[NSArray range:NSMakeRange(1,100)] randomSample:0.1]
+```
+[4, 6, 19, 24, 28, 32, 45, 46, 50, 88]
 
 ## Shuffle
 

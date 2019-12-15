@@ -311,6 +311,12 @@
     return [self objectAtIndex: randomIndex];
 }
 
+- (NSArray *) randomSample:(double)probability {
+    return [self filter:^BOOL(id value) {
+        return arc4random_uniform(100.0 / probability) < 100;
+    }];
+}
+
 - (NSArray *) shuffle {
     NSMutableArray *copy = [self mutableCopy];
     [copy sortUsingSelector: @selector(randomCompare:)];

@@ -158,6 +158,10 @@ typedef BOOL(^Test)(id);
 // Returns a random object from the array.
 - (id) randomObject;
 
+// Returns a sample of objects from the array,
+// included with the given probability.
+- (NSArray *) randomSample:(double)probability;
+
 // Returns an array with the objects in a random order.
 - (NSArray *) shuffle;
 

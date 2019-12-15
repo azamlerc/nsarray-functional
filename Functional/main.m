@@ -298,6 +298,11 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Random color: %@", [colors randomObject]);
         NSLog(@"Random number: %@", [numbers randomObject]);
 
+        NSLog(@"\nRandom sample");
+
+        NSLog(@"Random colors: %@", [[colors randomSample:0.5] join]);
+        NSLog(@"Random numbers: %@", [[[NSArray range:NSMakeRange(1,100)] randomSample:0.1] join]);
+
         NSLog(@"\nShuffle");
 
         NSLog(@"Shuffled colors: %@", [[colors shuffle] join]);
