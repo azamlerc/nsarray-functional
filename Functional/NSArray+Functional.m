@@ -273,6 +273,41 @@
     return result;
 }
 
+- (NSArray *) partition:(NSUInteger)size {
+    NSMutableArray *result = [NSMutableArray array];
+    NSMutableArray *array = [NSMutableArray array];
+    for (id object in self) {
+        [array addObject:object];
+        if ([array count] == size) {
+            [result addObject:array];
+            array = [NSMutableArray array];
+        }
+    }
+    if ([array count] > 0) {
+        [result addObject:array];
+    }
+    return result;
+}
+
+- (NSArray *) partitionBy:(Transform)block {
+    NSMutableArray *result = [NSMutableArray array];
+    NSMutableArray *array = [NSMutableArray array];
+    id previous = nil;
+    for (id object in self) {
+        id value = block(object);
+        if (previous != nil && previous != value) {
+            [result addObject:array];
+            array = [NSMutableArray array];
+        }
+        [array addObject:object];
+        previous = value;
+    }
+    if ([array count] > 0) {
+        [result addObject:array];
+    }
+    return result;
+}
+
 - (NSArray *) reverse {
     return [[self reverseObjectEnumerator] allObjects];
 }

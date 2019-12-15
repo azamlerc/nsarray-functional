@@ -135,6 +135,13 @@ typedef BOOL(^Test)(id);
 // the value is an array of objects with the same key.
 - (NSDictionary *) groupBy:(Transform)block;
 
+// Divide the array into chunks of a given size.
+- (NSArray *) partition:(NSUInteger)size;
+
+// Divide the array into chunks, forming a new chunk
+// each time the block returns a different value.
+- (NSArray *) partitionBy:(Transform)block;
+
 // Returns an array with the objects reversed.
 - (NSArray *) reverse;
 

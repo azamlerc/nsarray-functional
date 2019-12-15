@@ -35,6 +35,8 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Sort](#sort): sort using a comparator
 - [Sort By](#sort-by): sort by performing a calculation on each object
 - [Group By](#group-by): group by performing a calculation on each object
+- [Partition](#partition): divide into chunks of a given size
+- [Partition By](#partition-by): divide into chunks using a block
 - [Reverse](#reverse): reverse the array
 - [Unique](#unique): remove duplicates
 - [Dedupe](#dedupe): remove consecutive duplicates
@@ -605,6 +607,42 @@ Returns a dictionary where the key is the result of calling the block on each ob
 }]
 ```
 {odd: [1, 3, 5, 7, 9], even: [2, 4, 6, 8, 10]}
+
+## Partition
+
+`- (NSArray *) partition:(NSUInteger)size;`
+
+Divide the array into chunks of a given size.
+
+```
+[colors partition:2]
+```
+[[red, orange], [yellow, green], [blue, purple]]
+
+```
+[numbers partition:3]
+```
+[[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
+
+## Partition By
+
+`- (NSArray *) partitionBy:(Transform)block`
+
+Divide the array into chunks, forming a new chunk each time the block returns a different value.
+
+```
+[colors partitionBy:^(id value) {
+    return [NSNumber numberWithLong: [value length]];
+}]
+```
+[[red], [orange, yellow], [green], [blue], [purple]]
+
+```
+[randomNumbers partitionBy:^(id value) {
+    return [NSNumber numberWithBool: [value intValue] % 2];
+}]
+```
+[[14, 84, 2, 78, 100], [95], [54, 4, 100, 32]]
 
 ## Reverse
 

@@ -268,6 +268,7 @@ int main(int argc, const char * argv[]) {
         }] join]);
 
         NSLog(@"\nGroup by");
+        
         NSLog(@"Colors grouped by length: %@", [[colors groupBy:^(id value) {
             return [NSString stringWithFormat: @"%d", (int)[value length]];
         }] jsonString]);
@@ -277,6 +278,20 @@ int main(int argc, const char * argv[]) {
         NSLog(@"Numbers grouped by even/odd: %@", [[numbers groupBy:^(id value) {
             return [value intValue] % 2 == 0 ? @"even" : @"odd";
         }] jsonString]);
+
+        NSLog(@"\nPartition");
+        
+        NSLog(@"Colors partitioned: %@", [[colors partition:2] nestedJoin]);
+        NSLog(@"Numbers partitioned: %@", [[numbers partition:3] nestedJoin]);
+
+        NSLog(@"\nPartition By");
+        
+        NSLog(@"Colors partitioned by length: %@", [[colors partitionBy:^(id value) {
+            return [NSNumber numberWithLong: [value length]];
+        }] nestedJoin]);
+        NSLog(@"Numbers partitioned by even/odd: %@", [[randomNumbers partitionBy:^(id value) {
+            return [NSNumber numberWithBool: [value intValue] % 2];
+        }] nestedJoin]);
 
         NSLog(@"\nReverse");
 
