@@ -267,6 +267,17 @@ int main(int argc, const char * argv[]) {
           return [value length];
         }] join]);
 
+        NSLog(@"\nGroup by");
+        NSLog(@"Colors grouped by length: %@", [[colors groupBy:^(id value) {
+            return [NSString stringWithFormat: @"%d", (int)[value length]];
+        }] jsonString]);
+        NSLog(@"Colors grouped by first letter: %@", [[colors groupBy:^(id value) {
+            return [value substringToIndex:1];
+        }] jsonString]);
+        NSLog(@"Numbers grouped by even/odd: %@", [[numbers groupBy:^(id value) {
+            return [value intValue] % 2 == 0 ? @"even" : @"odd";
+        }] jsonString]);
+
         NSLog(@"\nReverse");
 
         NSLog(@"Reversed colors: %@", [[colors reverse] join]);
@@ -318,11 +329,11 @@ int main(int argc, const char * argv[]) {
         
         NSLog(@"\nColor combinations:\n%@", [[[colors squareMap:operationFromSelector(@selector(ish:))] map:join] join:@"\n"]);
         
-        background(^{
-            return @"It worked!";
-        }, ^(id result){
-            NSLog(@"Result: %@", result);
-        });
+//        background(^{
+//            return @"It worked!";
+//        }, ^(id result){
+//            NSLog(@"Result: %@", result);
+//        });
         
     }
     return 0;

@@ -130,6 +130,11 @@ typedef BOOL(^Test)(id);
 // each object and comparing the resulting integers.
 - (NSArray *) sortBy:(NSUInteger(^)(id))block;
 
+// Returns a dictionary where the key is the result of
+// calling the block on each object in the array and
+// the value is an array of objects with the same key.
+- (NSDictionary *) groupBy:(Transform)block;
+
 // Returns an array with the objects reversed.
 - (NSArray *) reverse;
 
@@ -182,6 +187,9 @@ typedef BOOL(^Test)(id);
 
 // Returns an array with the same object a given number of times.
 - (NSArray *) copies:(NSUInteger)count;
+
+// Returns a JSON string version of the object.
+- (NSString *) jsonString;
 
 - (NSComparisonResult) randomCompare: (NSObject *) object;
 

@@ -259,6 +259,20 @@
     }];
 }
 
+- (NSDictionary *) groupBy:(Transform)block {
+    NSMutableDictionary *result = [NSMutableDictionary dictionary];
+    for (id object in self) {
+        id key = block(object);
+        NSMutableArray *array = [result objectForKey:key];
+        if (array == nil) {
+            array = [NSMutableArray array];
+            [result setObject:array forKey:key];
+        }
+        [array addObject:object];
+    }
+    return result;
+}
+
 - (NSArray *) reverse {
     return [[self reverseObjectEnumerator] allObjects];
 }
@@ -365,6 +379,15 @@
         [result addObject:self];
     }
     return result;
+}
+
+- (NSString *) jsonString {
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self
+       options:0
+       // options:(NSJSONWritingOptions) NSJSONWritingPrettyPrinted
+       error:&error];
+    return jsonData ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : @"[]";
 }
 
 - (NSComparisonResult) randomCompare: (NSObject *) object {

@@ -34,6 +34,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Reduce](#reduce): iterate over the array using an accumulator block
 - [Sort](#sort): sort using a comparator
 - [Sort By](#sort-by): sort by performing a calculation on each object
+- [Group By](#group-by): group by performing a calculation on each object
 - [Reverse](#reverse): reverse the array
 - [Unique](#unique): remove duplicates
 - [Limit](#limit): just a few objects
@@ -574,6 +575,33 @@ Returns an array sorted by calling the block on each object and comparing the re
 }]
 ```
 [red, blue, green, orange, yellow, purple]
+
+## Group By
+
+`- (NSDictionary *) groupBy:(Transform)block;`
+
+Returns a dictionary where the key is the result of calling the block on each object in the array and the value is an array of objects with the same key.
+
+```
+[colors groupBy:^(id value) {
+    return [NSNumber numberWithInt: [value length]];
+}]
+```
+{3: [red], 6: [orange, yellow, purple], 4: [blue], 5: [green]}
+
+```
+[colors groupBy:^(id value) {
+    return [value substringToIndex:1];
+}]
+```
+{r: [red], y: [yellow], g: [green], b: [blue], p: [purple], o: [orange]}
+
+```
+[numbers groupBy:^(id value) {
+    return [value intValue] % 2 == 0 ? @"even" : @"odd";
+}]
+```
+{odd: [1, 3, 5, 7, 9], even: [2, 4, 6, 8, 10]}
 
 ## Reverse
 
