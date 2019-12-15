@@ -18,7 +18,6 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Any](#any): check if any object passes a test
 - [Contains Objects](#contains-objects): check if an array contains some objects
 - [Find](#find): find an object in the array
-- [Replace With](#replace-with): replace objects in the array
 - [Map](#map): transform each object in the array
 - [Indexed Map](#indexed-map): transform each object with index
 - [Zip Map](#zip-map): call a block on objects from two arrays
@@ -28,6 +27,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Nested Map](#nested-map): transform all objects in a nested array
 - [Map All](#map-all): call several blocks on each object
 - [Replace](#replace): replace all objects using a dictionary
+- [Replace With](#replace-with): replace objects in the array
 - [Filter](#filter): objects that pass a test
 - [Remove](#remove): objects that don't pass a test
 - [Filter Objects](#filter-objects): objects that are in another array
@@ -265,17 +265,6 @@ Returns the first object in the array for which the block returns true.
 ```
 blue
 
-## Replace With
-
-`- (NSArray *) replace:(id)object with:(id)other;`
-
-Replaces all occurences of an object with another object.
-
-```
-[colors replace:@"blue" with:@"turquoise"]
-```
-[red, orange, yellow, green, turquoise, purple]
-
 ## Map
 
 `- (NSArray *) map:(Transform)block;`
@@ -479,6 +468,17 @@ NSDictionary *frenchColors = @{
 [colors replace:frenchColors]
 ```
 [rouge, orange, jaune, vert, bleu, violet]
+
+## Replace With
+
+`- (NSArray *) replace:(id)object with:(id)other;`
+
+Replaces all occurences of an object with another object.
+
+```
+[colors replace:@"blue" with:@"turquoise"]
+```
+[red, orange, yellow, green, turquoise, purple]
 
 ## Filter
 
