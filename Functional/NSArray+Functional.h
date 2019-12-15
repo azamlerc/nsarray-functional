@@ -148,6 +148,9 @@ typedef BOOL(^Test)(id);
 // Returns an initial slice of the array with a length up to the limit.
 - (NSArray *) limit:(int)limit;
 
+// Returns every nth object from the array, starting with the first.
+- (NSArray *) takeNth:(int)n;
+
 // Joins the items in the array using commas, in square brackets.
 - (NSString *) join;
 

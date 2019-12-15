@@ -297,6 +297,16 @@
     return [self subarrayWithRange:NSMakeRange(0, limit)];
 }
 
+- (NSArray *) takeNth:(int)n {
+    NSMutableArray *result = [NSMutableArray array];
+    for (NSUInteger index = 0; index < [self count]; index++) {
+        if (index % n == 0) {
+            [result addObject:[self objectAtIndex:index]];
+        }
+    }
+    return result;
+}
+
 - (NSString *) join {
     return [NSString stringWithFormat: @"[%@]", [self join: @", "]];
 }

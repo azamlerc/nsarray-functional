@@ -39,6 +39,7 @@ An Objective-C category that adds functional programming methods to NSArray.
 - [Unique](#unique): remove duplicates
 - [Dedupe](#dedupe): remove consecutive duplicates
 - [Limit](#limit): just a few objects
+- [Take Nth](#take-nth): just every nth object
 - [Join](#join): convert array to string
 - [Nested Join](#nested-join): convert nested array to string
 - [Random Object](#random-object): random object from the array
@@ -661,6 +662,22 @@ Returns an initial slice of the array with a length up to the limit.
 [numbers limit:3]
 ```
 [1, 2, 3]
+
+## Take Nth
+
+`- (NSArray *) takeNth:(int)n;`
+
+Returns every nth object from the array, starting with the first.
+
+```
+[colors takeNth:2]
+```
+[red, yellow, blue]
+
+```
+[numbers takeNth:3]
+```
+[1, 4, 7, 10]
 
 ## Join
 

@@ -297,6 +297,11 @@ int main(int argc, const char * argv[]) {
         NSLog(@"First 3 colors: %@", [[colors limit:3] join]);
         NSLog(@"First 3 numbers: %@", [[numbers limit:3] join]);
 
+        NSLog(@"\nTake Nth");
+
+        NSLog(@"Every other color: %@", [[colors takeNth:2] join]);
+        NSLog(@"Every 3 numbers: %@", [[numbers takeNth:3] join]);
+
         NSLog(@"\nRandom object");
 
         NSLog(@"Random color: %@", [colors randomObject]);
